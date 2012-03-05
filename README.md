@@ -29,9 +29,9 @@ specify('more_assertions_than_asserts', function(assert) {
 });
 ```
 
-specify runs tests in one by one, not in parallel. this means that if you set `assert.expect` higher than the number of asserts you actually do the rest of the tests wont run, cause you will never finish the current test.
+`specify` runs tests in one by one, not in parallel. this means that if you set `assert.expect` higher than the number of asserts you actually do the rest of the tests wont run, cause you will never finish the current test.
 
-specify is standalone, you don't need any special binaries to run it.
+`specify` is standalone, you don't need any special binaries to run it.
 
 <a name="installation"/>
 # installation
@@ -48,7 +48,7 @@ specify is standalone, you don't need any special binaries to run it.
 
 one thing that really annoys me in other testing scripts is that i can't select which tests i want to run and need to constantly comment things out.
 
-in specify you can just give it an array with the tests you want to run:
+in `specify` you can just give it an array with the tests you want to run:
 
 ``` sh
 node my_awesome_test.js foo bar

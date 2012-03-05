@@ -46,9 +46,7 @@ specify('more_assertions_than_asserts', function(assert) {
 <a name="filtering"/>
 # filtering
 
-one thing that really annoys me in other testing scripts is that i can't select which tests i want to run and need to constantly comment things out.
-
-in `specify` you can just give it an array with the tests you want to run:
+in `specify` you specify which tests you want to run:
 
 ``` sh
 node my_awesome_test.js foo bar

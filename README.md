@@ -48,10 +48,6 @@ specify('more_assertions_than_asserts', function(assert) {
 
 in `specify` you specify which tests you want to run:
 
-``` sh
-node my_awesome_test.js foo bar
-```
-
 ``` js
 var specify = require('specify')
   , filters = process.argv.slice(2)
@@ -73,13 +69,11 @@ specify.run(filters);
 ```
 
 ``` sh
-dscape at air in ~/Desktop/dev/specify  on master* node v0.6.7
 $ node index.js foo bar
 ✔ 1/1 foo 
 ✗ 0/1 bar 
 └───── bar failed
 ✗ 1/2 summary
-dscape at air in ~/Desktop/dev/specify  on master* node v0.6.7
 $ node index.js 
 ✔ 1/1 foo 
 ✗ 0/1 bar 

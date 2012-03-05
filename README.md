@@ -18,7 +18,7 @@ specify.run();
 
 the assert calls are function that wrap the assert module. when you call them you are actually calling a callback.
 
-the way i figure out how many asserts you will run is by [static-analysis]. putting it simply it means i count the numbers of time you wrote `assert.`. this doesn't work for for loop, so in that case you can do something like this:
+the way i figure out how many asserts you will run is by [static-analysis]. putting it simply it means i count the numbers of time you wrote `assert.`. this doesn't work for a `for loop`, so in that case you can do something like this:
 
 ``` js
 specify('more_assertions_than_asserts', function(assert) {

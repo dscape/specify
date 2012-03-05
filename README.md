@@ -4,12 +4,16 @@
 `specify` is the simplest way i could think to do node.js testing. it works with sync code and async code all the same.
 
 ``` js
-specify('create_by_secret#wrong_invitation_code', function (assert) {
+var specify = require('specify');
+
+specify('create_by_secret', function (assert) {
   user.create_by_secret({invitation_code: "1234321!!"}, function (err) {
     assert.equal(err.eid, "ec:api:user:create_by_secret:wrong_code");
     assert.equal(err.status_code, 400);
   });
 });
+
+specify.run();
 ```
 
 the assert calls are function that wrap the assert module. when you call them you are actually calling a callback.
@@ -17,7 +21,7 @@ the assert calls are function that wrap the assert module. when you call them yo
 the way i figure out how many asserts you will run is by [static-analysis]. putting it simply it means i count the numbers of time you wrote `assert.`. this doesn't work for for loop, so in that case you can do something like this:
 
 ``` js
-specify('specify#more_assertions_than_asserts', function(assert) {
+specify('more_assertions_than_asserts', function(assert) {
   assert.expect(5);
   for(var i in [1,2,3,4,5]) {
     assert.equal(i,i);
@@ -26,6 +30,8 @@ specify('specify#more_assertions_than_asserts', function(assert) {
 ```
 
 specify runs tests in one by one, not in parallel. this means that if you set `assert.expect` higher than the number of asserts you actually do the rest of the tests wont run, cause you will never finish the current test.
+
+specify is standalone, you don't need any special binaries to run it.
 
 <a name="installation"/>
 # installation
@@ -36,6 +42,53 @@ specify runs tests in one by one, not in parallel. this means that if you set `a
 1. install [npm]
 2. `npm install specify`
 3. `var specify = require('specify');`
+
+<a name="filtering"/>
+# filtering
+
+one thing that really annoys me in other testing scripts is that i can't select which tests i want to run and need to constantly comment things out.
+
+in specify you can just give it an array with the tests you want to run:
+
+``` sh
+node my_awesome_test.js foo bar
+```
+
+``` js
+var specify = require('specify')
+  , filters = process.argv.slice(2)
+  ;
+
+specify('foo', function (assert) {
+  assert.equal('foo', 'foo');
+});
+
+specify('bar', function (assert) {
+  assert.equal('bar', 'baz', 'bar failed');
+});
+
+specify('baz', function (assert) {
+  assert.equal('baz', 'baz');
+});
+
+specify.run(filters);
+```
+
+``` sh
+dscape at air in ~/Desktop/dev/specify  on master* node v0.6.7
+$ node index.js foo bar
+✔ 1/1 foo 
+✗ 0/1 bar 
+└───── bar failed
+✗ 1/2 summary
+dscape at air in ~/Desktop/dev/specify  on master* node v0.6.7
+$ node index.js 
+✔ 1/1 foo 
+✗ 0/1 bar 
+└───── bar failed
+✔ 1/1 baz 
+✗ 2/3 summary
+```
 
 <a name="reporters"/>
 # reporters

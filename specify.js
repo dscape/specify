@@ -1,18 +1,21 @@
 var assert     = require('assert')
+  , path       = require('path'), colors
+  , reporters  = {}
   , assertions = 
-    [ 'fail', 'ok', 'equal', 'notEqual', 'deepEqual', 'notDeepEqual'
-    , 'strictEqual', 'notStrictEqual', 'throws', 'doesNotThrow', 'ifError' ]
-  , colors
+    [ 'ok', 'equal', 'notEqual', 'deepEqual', 'notDeepEqual'
+    , 'strictEqual', 'notStrictEqual' ]
   ;
-module.exports = (function describe() {
-  try { colors = require('colors'); } catch (e) {}
-  function c(msg,color) { return colors ? msg[color] : msg; }
+require('fs').readdirSync('./reporters').forEach(function(reporter) {
+  reporters[reporter] = require(path.join(__dirname, 'reporters', reporter));
+});
+module.exports = (function specify() {
   var cache     = []
     , counts    = { _totals: {ok: 0, fail: 0} }
-    , desc
+    , spec, summary, def_summary
     ;
-  function ensureFor(test, expect, done) {
-    var ensure = {}, count  = expect;
+  def_summary = summary = reporters['default.js'];
+  function ensure_for(test, expect, done) {
+    var ensure = {}, count  = expect, errored = [];
     assertions.forEach(function(assertion) {
       counts[test] = {ok: 0, fail: 0};
       ensure[assertion] = function () {
@@ -21,25 +24,23 @@ module.exports = (function describe() {
           counts._totals.ok++;
           counts[test].ok++;
         }
-        catch (ex) {
+        catch (err) {
+          errored.push(err.message);
           counts._totals.fail++;
           counts[test].fail++;
         }
         count--;
         if(count === 0) { 
-          done();
+          done(errored);
         }
       };
     });
+    ensure.expect = function (nr) { count = nr; };
     return ensure;
   }
-  function runTests(tests) {
+  function run_tests(tests) {
     if(tests.length === 0) {
-      var symbol = counts._totals.fail === 0 ? c('✔', 'green') : c('✗','red');
-      process.stdout.write(symbol + ' ');
-      process.stdout.write(c('summary', 'yellow') + " ");
-      console.log(counts._totals.ok + ' worked, ' + 
-        counts._totals.fail + ' failed ');
+      summary('summary', counts._totals);
       process.exit(counts._totals.fail === 0 ? 0 : -1);
     }
     else {
@@ -54,32 +55,41 @@ module.exports = (function describe() {
         var match = fbody.match(new RegExp("assert\\.\\w", "gm"));
         if(match) {
           expect = match.length;
-          return f(ensureFor(name, expect, function () {
-            var symbol =
-              counts[name].fail === 0 ? c('✔', 'green') : c('✗','red');
-            process.stdout.write(symbol + ' ');
-            process.stdout.write(c(name, 'cyan') + " ");
-            console.log(counts[name].ok + ' worked, ' + 
-              counts[name].fail + ' failed ');
-            runTests(tests);
+          return f(ensure_for(name, expect, function (errors) {
+            summary(name, counts[name], errors);
+            run_tests(tests);
           }));
         } else {
-          console.log(c('✗ ','red') + c(name, 'cyan') 
-            + ' you need to add at least on `assert.*` call');
+          summary(name, {ok: 0, fail: 1}, 
+            [' you need to add at least on `assert.*` call']);
         }
       } else {
-        console.log(c('✗ ','red') + c(name, 'cyan') 
-          + ' `assert` must be the first argument of your callback');
+        summary(name, {ok: 0, fail: 1}, 
+          [' `assert` must be the first argument of your callback']);
       }
       counts._totals.fail++;
-      runTests(tests);
+      run_tests(tests);
     }
   }
-  desc = function describeTest(name, f) {
+  spec = function specify_test(name, f) {
     cache.push([].slice.call(arguments,0));
   };
-  desc.run = function runAllTests(filter) {
-    if(filter.length !== 0) {
+  spec.summary = function (f) {
+    if (typeof f === 'function') {
+      summary = f;
+      return;
+    }
+    else if (typeof f === 'string') {
+      var reporter = reporters[f + '.js'];
+      if(typeof reporter === 'function') {
+        summary = reporter;
+        return;
+      }
+    }
+    summary = def_summary;
+  };
+  spec.run = function run_all_tests(filter) {
+    if(filter && filter.length !== 0) {
       var filtered_cache = [];
       filter.forEach(function (e) {
         cache.forEach(function (c){
@@ -87,11 +97,11 @@ module.exports = (function describe() {
           if(name===e) filtered_cache.push(c);
         });
       });
-      runTests(filtered_cache);
+      run_tests(filtered_cache);
     }
     else {
-      runTests(cache);
+      run_tests(cache);
     }
   };
-  return desc;
+  return spec;
 })();

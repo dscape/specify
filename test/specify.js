@@ -31,7 +31,7 @@ specify('specify#assertion_with_optional_message', function(assert) {
 specify('specify#custom_pretty_print', function(assert) {
   // set a custom summary pretty print function
   specify.summary(function (name, report, errors) {
-    console.log([name, errors]);
+    console.log(name + JSON.stringify(errors));
   });
   setTimeout(function () {
     assert.ok(false, 'i see dead people');

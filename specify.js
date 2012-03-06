@@ -5,8 +5,9 @@ var assert     = require('assert')
     [ 'ok', 'equal', 'notEqual', 'deepEqual', 'notDeepEqual'
     , 'strictEqual', 'notStrictEqual' ]
   ;
-require('fs').readdirSync('./reporters').forEach(function(reporter) {
-  reporters[reporter] = require(path.join(__dirname, 'reporters', reporter));
+require('fs').readdirSync(path.join(__dirname, 'reporters'))
+  .forEach(function(reporter) {
+    reporters[reporter]=require(path.join(__dirname, 'reporters', reporter));
 });
 module.exports = (function specify() {
   var cache     = []

@@ -14,12 +14,15 @@ specify#custom_pretty_print[{"msg":"i see dead people","assert":"ok","args":[fal
 specify#custom_pretty_print_just_name
 ✔ 1/1 specify#async 
 ✔ 5/5 specify#more_assertions_than_asserts 
-✗ 0/7 specify#differences 
+✗ 0/8 specify#differences 
 └───── Should be true
 ❝ ok false
 └───── One is love
 ❝ equal 
 13 // 1
+└───── One is love
+❝ equal 
+"undefined" // 1
 └───── One two
 ❝ notEqual 
 2 // 2
@@ -41,4 +44,4 @@ specify#custom_pretty_print_just_name
 └───── 3 4 knock on the door
 ❝ notStrictEqual 
 4 // 4
-✗ 18/31 summary 
+✗ 18/32 summary 

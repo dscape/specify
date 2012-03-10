@@ -76,6 +76,7 @@ specify('specify#more_assertions_than_asserts', function(assert) {
 specify('specify#differences', function(assert) { 
   assert.ok(false, "Should be true");
   assert.equal(13,1, "One is love");
+  assert.equal(undefined,1, "One is love");
   assert.notEqual(2,2, "One two");
   assert.deepEqual({a: {b: 1}}, {a: {b: 3}}, "Blooper");
   assert.notDeepEqual({a:1}, {a:1}, "Not Deep");

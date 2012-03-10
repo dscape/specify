@@ -23,9 +23,12 @@ module.exports = function default_reporter(name, report, errors){
             difflet({ indent : 2, comment : true })
               .compare(err.args[0], err.args[1]));
         } else {
-          process.stdout.write(JSON.stringify(err.args[0], null, 1).magenta);
+          var indexzero = err.args[0] || "undefined"
+            , indexone  = err.args[1] || "undefined"
+            ;
+          process.stdout.write(JSON.stringify(indexzero, null, 1).magenta);
           console.log((" // " +
-            JSON.stringify(err.args[1], null, 1)).cyan);
+            JSON.stringify(indexone, null, 1)).cyan);
         }
       }
     }

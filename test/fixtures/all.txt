@@ -47,10 +47,20 @@ specify#custom_pretty_print_just_name
 ✗ 1/5 specify#circular_reference 
 └───── undefined
 ❝ equal 
- // { "circular": "⥁"}
+{
+ "abc": "Hello",
+ "go": {
+  "$ref": "$"
+ }
+} // "undefined"
 └───── undefined
 ❝ equal 
-"undefined" // { "circular": "⥁"}
+"undefined" // {
+ "abc": "Hello",
+ "go": {
+  "$ref": "$"
+ }
+}
 └───── undefined
 ❝ equal 
 {[1m

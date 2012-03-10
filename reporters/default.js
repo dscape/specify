@@ -1,5 +1,6 @@
 var colors  = require('colors')
   , difflet = require('difflet')
+  , decycle = require('../lib/cycle').decycle
   ;
 
 module.exports = function default_reporter(name, report, errors){
@@ -23,10 +24,10 @@ module.exports = function default_reporter(name, report, errors){
             difflet({ indent : 2, comment : true })
               .compare(err.args[0], err.args[1]));
         } else {
+          var indexzero = decycle(err.args[0] || "undefined")
+            , indexone  = decycle(err.args[1] || "undefined")
+            ;
           try {
-            var indexzero = err.args[0] || "undefined"
-              , indexone  = err.args[1] || "undefined"
-              ;
             process.stdout.write(JSON.stringify(indexzero, null, 1).magenta);
             console.log((" // " +
               JSON.stringify(indexone, null, 1)).cyan);

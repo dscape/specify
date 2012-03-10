@@ -44,4 +44,24 @@ specify#custom_pretty_print_just_name
 └───── 3 4 knock on the door
 ❝ notStrictEqual 
 4 // 4
-✗ 18/32 summary 
+✗ 1/5 specify#circular_reference 
+└───── undefined
+❝ equal 
+ // { "circular": "⥁"}
+└───── undefined
+❝ equal 
+"undefined" // { "circular": "⥁"}
+└───── undefined
+❝ equal 
+{[1m
+  "abc" : "Hello",[0m[1m // != undefined[0m[1m
+  "go" : {
+  }[0m[1m // != undefined[0m
+}
+└───── undefined
+❝ equal 
+{
+  [1m[0m[1m// [0m[1m"abc" : "Hello",
+  [0m[1m// [0m[1m"go" : {"abc":"Hello","go":{}}[0m
+}
+✗ 19/37 summary 

@@ -84,4 +84,17 @@ specify('specify#differences', function(assert) {
   assert.notStrictEqual(4, 4, "3 4 knock on the door");
 });
 
+specify('specify#circular_reference', function(assert) {
+  function foo() {
+    this.abc = "Hello"; this.go = this;
+    return this;
+  }
+  var c = new foo();
+  assert.equal(c,c);
+  assert.equal(c,undefined);
+  assert.equal(undefined,c);
+  assert.equal({},c);
+  assert.equal(c,{});
+});
+
 specify.run(filters);

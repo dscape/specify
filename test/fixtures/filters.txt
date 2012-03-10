@@ -1,5 +1,7 @@
 ✗ 1/3 specify#assertion_with_optional_message 
 └───── this is the error you are looking for
+❝ ok false
 └───── this will
+❝ ok false
 ✔ 7/7 specify#all_assertions 
 ✗ 8/10 summary 

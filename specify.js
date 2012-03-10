@@ -26,7 +26,8 @@ module.exports = (function specify() {
           counts[test].ok++;
         }
         catch (err) {
-          errored.push(err.message);
+          errored.push({ msg: err.message
+            , assert: assertion, args: [].slice.call(arguments,0)});
           counts._totals.fail++;
           counts[test].fail++;
         }

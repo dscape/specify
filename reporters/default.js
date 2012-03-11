@@ -19,7 +19,8 @@ module.exports = function default_reporter(name, report, errors){
         console.log(err.args[0]);
       } else {
         console.log();
-        if(typeof err.args[0]==="object" && typeof err.args[1]==="object"){
+        if(err.args[0] && err.args[1] && typeof err.args[0]==="object" &&
+             typeof err.args[1]==="object") {
           console.log(
             difflet({ indent : 2, comment : true })
               .compare(err.args[0], err.args[1]));

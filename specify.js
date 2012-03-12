@@ -91,6 +91,7 @@ module.exports = (function specify() {
     summary = def_summary;
   };
   spec.run = function run_all_tests(filter) {
+    filter = typeof filter === "string" ? [filter] : filter;
     if(filter && filter.length !== 0) {
       var filtered_cache = [];
       filter.forEach(function (e) {

@@ -113,9 +113,9 @@ specify('specify#custom_reporter_from_function', function(assert) {
 ```
 
 <a name="roadmap"/>
-# roadmap
+# roadmap / limitations
 
-a pull request on any of these, including tests, is automatically accepted!
+pull requests are welcome!
 
 ## timeouts
 
@@ -161,7 +161,7 @@ check out the tests in `test/specify.js`
 <a name="contribute"/>
 # contribute
 
-everyone is welcome to contribute. patches, bug-fixes, new features. i suggest you start on road map for new features, as it's unlikely we want something small like `specify` to become bloated.
+everyone is welcome to contribute. patches, bug-fixes, reporters, new features.
 
 1. create an [issue][issues] so the community can comment on your idea
 2. fork `specify`

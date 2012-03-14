@@ -12,6 +12,10 @@ specify('specify#dinosaurs', function(dino) {
   dino.ok({trex:true});
 });
 
+specify('specify#wrong_var', function(dino) {
+  assert.ok({trex:"sad"});
+});
+
 specify('specify#sync', function(assert) {
   assert.ok(true);
 });
@@ -37,16 +41,13 @@ specify('specify#custom_pretty_print', function(assert) {
   specify.summary(function (name, report, errors) {
     console.log(name + ' :: ' + JSON.stringify(errors));
   });
-  setTimeout(function () {
-    assert.ok(false, 'i see dead people');
-    assert.ok(true);
-  },1);
+  assert.ok(false, 'i see dead people');
 });
 
 specify('specify#ask_for_a_specific_reporter', function(assert) {
   // reset summary function
   specify.summary('default');
-    assert.ok(false, 'back to default');
+  assert.ok(false, 'back to default');
 });
 
 specify('specify#custom_pretty_print_just_name', function(assert) {
@@ -54,17 +55,15 @@ specify('specify#custom_pretty_print_just_name', function(assert) {
   specify.summary(function (name, report, errors) {
     console.log(name);
   });
-  setTimeout(function () {
-    assert.ok(false, 'i see dead people');
-    assert.ok(true);
-  },1);
+  assert.ok(false, 'i see dead people');
+  assert.ok(true);
 });
 
 specify('specify#async', function(assert) {
   // reset summary function
   specify.summary();
-  setTimeout(function (){
-    assert.ok(true);
+  setTimeout(function () {
+    assert.ok(true, "was true");
   }, 1);
 });
 
@@ -121,15 +120,13 @@ specify('specify#circular_reference', function(assert) {
   assert.equal(c,{});
 });
 
-specify('specify#cascading_errors', function(assert) {
+specify('specify#cascading_sync', function(assert) {
   var err = new Error("Testing")
     , body
     ;
  assert.expect(1);
- if(err) { 
-   return assert.ok(!err);
- }
- assert.equal(body.name, "this should not run");
+ if(err) { assert.ok(!err); }
+ else { assert.equal(body.name, "this should not run"); }
 });
 
 specify('specify#comments', function (assert) {

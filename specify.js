@@ -63,7 +63,7 @@ module.exports = (function specify() {
           }));
         } else {
           summary(name, {ok: 0, fail: 1}, 
-            [' you need to add at least on `assert.*` call']);
+            [' you need to add at least on `'+ vari[1] + '.*` call']);
         }
       } else {
         summary(name, {ok: 0, fail: 1}, 

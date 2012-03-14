@@ -16,6 +16,8 @@ specify('create_by_secret', function (assert) {
 specify.run();
 ```
 
+unlike normal assert calls that throw, `specify` will always run all of the assertions.
+
 the assert calls are functions that wrap the assert module. when you call them you are actually calling a callback.
 
 the way i figure out how many asserts you will run is by [static-analysis]. putting it simply it means i count the numbers of time you wrote `assert.`. this doesn't work for a `for loop`, so in that case you can do something like this:
@@ -110,6 +112,47 @@ specify('specify#custom_reporter_from_function', function(assert) {
 });
 ```
 
+<a name="roadmap"/>
+# roadmap
+
+a pull request on any of these, including tests, is automatically accepted!
+
+## timeouts
+
+``` js
+specify('foo', function (assert) {
+  call_to_db_that_takes_a_long_time(function (data) {
+    assert.timeout(15); // 15 ms
+    assert.equal(data, 'foo');
+  });
+});
+```
+
+## detect comments in static analysis step
+
+``` js
+specify('foo', function (assert) {
+  // right now this requires you to do 
+  // assert.expect(1);
+  assert.equal('foo', 'foo');
+  //assert.ok(true);
+});
+```
+
+## prevent invocation of functions once assert fails
+
+``` js
+specify('foo', function (assert) {
+  var err = new Error()
+    , body
+    ;
+  assert.ok(!err);
+  // this throws cause undefined.status throws
+  assert.equal(body.status, "testing");
+  // ideally this should not be run
+});
+```
+
 <a name="samples"/>
 # samples
 
@@ -118,7 +161,7 @@ check out the tests in `test/specify.js`
 <a name="contribute"/>
 # contribute
 
-everyone is welcome to contribute. patches, bug-fixes, new features
+everyone is welcome to contribute. patches, bug-fixes, new features. i suggest you start on road map for new features, as it's unlikely we want something small like `specify` to become bloated.
 
 1. create an [issue][issues] so the community can comment on your idea
 2. fork `specify`

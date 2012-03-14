@@ -54,7 +54,7 @@ module.exports = (function specify() {
         , expect
         ;
       if(Array.isArray(vari) && vari.length > 0) {
-        var match = fbody.match(new RegExp("assert\\.\\w", "gm"));
+        var match = fbody.match(new RegExp(vari[1] + "\\.\\w", "gm"));
         if(match) {
           expect = match.length;
           return f(ensure_for(name, expect, function (errors) {

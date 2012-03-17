@@ -1,5 +1,5 @@
 
-  /specify.js
+  /test/specify.js
 
 ✗ 1/3 specify#assertion_with_optional_message 
 └───── this is the error you are looking for

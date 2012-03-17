@@ -91,9 +91,9 @@ module.exports = (function specify() {
     summary = def_summary;
   };
   spec.run = function run_all_tests(filter) {
-    console.log()
-    console.log(" ", __filename.replace(process.cwd(), ""));
-    console.log()
+    console.log();
+    console.log(" ", module.parent.filename.replace(process.cwd(), ""));
+    console.log();
     filter = typeof filter === "string" ? [filter] : filter;
     if(filter && filter.length !== 0) {
       var filtered_cache = [];

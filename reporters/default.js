@@ -1,6 +1,6 @@
 var colors  = require('colors')
   , difflet = require('difflet')
-  , decycle = require('../lib/cycle').decycle
+  , decycle = require('cycle').decycle
   ;
 
 module.exports = function default_reporter(name, report, errors){

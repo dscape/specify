@@ -70,6 +70,7 @@ specify('baz', function (assert) {
 specify.run(filters);
 ```
 
+<a name="timeouts"/>
 ## timeouts
 
 `specify` supports timeouts, it throws an exception when the timeout is reached and handles it like any uncaught exception.

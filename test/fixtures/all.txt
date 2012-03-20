@@ -92,14 +92,5 @@ specify#custom_pretty_print_just_name
 ✗ 0/1 specify#cascading_sync 
 └───── No error
 ❝ ok false
-✗ 0/1 specify#throws 
-└───── bla
-❝ equal 
-"uncaught" // {
- "stacktrace": [
-  "at EventEmitter.uncaughtHandler (/Users/dscape/Desktop/dev/specify/specify.js:131:41)",
-  "at EventEmitter.emit (events.js:88:20)"
- ]
-}
 ✔ 2/2 specify#comments 
-✗ 20/42 summary 
+✗ 20/41 summary 

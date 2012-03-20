@@ -64,6 +64,8 @@ module.exports = (function specify() {
           if(match) {
             expect = match.length;
             current_test = {name: name, remaining: tests};
+            process.removeAllListeners('uncaughtException');
+            process.on('uncaughtException', uncaughtHandler);
             return f(ensure_for(name, expect, function (errors) {
               summary(name, counts[name], errors);
               run_tests(tests);
@@ -100,8 +102,6 @@ module.exports = (function specify() {
     summary = def_summary;
   };
   spec.run = function run_all_tests(filter) {
-    process.removeAllListeners('uncaughtException');
-    process.on('uncaughtException', uncaughtHandler);
     console.log();
     console.log(" ", module.parent.filename.replace(process.cwd(), ""));
     console.log();

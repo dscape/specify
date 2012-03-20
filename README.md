@@ -70,20 +70,6 @@ specify('baz', function (assert) {
 specify.run(filters);
 ```
 
-``` sh
-$ node index.js foo bar
-✔ 1/1 foo 
-✗ 0/1 bar 
-└───── bar failed
-✗ 1/2 summary
-$ node index.js 
-✔ 1/1 foo 
-✗ 0/1 bar 
-└───── bar failed
-✔ 1/1 baz 
-✗ 2/3 summary
-```
-
 ## timeouts
 
 `specify` supports timeouts, it throws an exception when the timeout is reached and handles it like any uncaught exception.

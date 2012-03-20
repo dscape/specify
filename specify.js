@@ -4,6 +4,8 @@ var assert     = require('assert')
   , assertions = 
     [ 'ok', 'equal', 'notEqual', 'deepEqual', 'notDeepEqual'
     , 'strictEqual', 'notStrictEqual' ]
+  , err_count  = 0
+  , MAX_ERRORS = 1000
   ;
 
 require('fs').readdirSync(path.join(__dirname, 'reporters'))
@@ -44,39 +46,42 @@ module.exports = (function specify() {
     return ensure;
   }
   function run_tests(tests) {
-    if(tests.length === 0) {
-      summary('summary', counts._totals);
-      process.exit(counts._totals.fail === 0 ? 0 : -1);
-    }
-    else {
-      var test   = tests.shift()
-        , name   = test[0]
-        , f      = test[1]
-        , fbody  = f.toString()
-        , vari   = fbody.match(/\((\w+)/m)
-        , expect
-        ;
-      if(Array.isArray(vari) && vari.length > 0) {
-        var match = fbody.match(new RegExp(vari[1] + "\\.\\w", "gm"));
-        if(match) {
-          expect = match.length;
-          current_test = {name: name, remaining: tests};
-          return f(ensure_for(name, expect, function (errors) {
-            summary(name, counts[name], errors);
-            run_tests(tests);
-          }));
+    process.nextTick(function () { 
+      if(tests.length === 0) {
+        summary('summary', counts._totals);
+        process.exit(counts._totals.fail === 0 ? 0 : -1);
+      }
+      else {
+        var test   = tests.shift()
+          , name   = test[0]
+          , f      = test[1]
+          , fbody  = f.toString()
+          , vari   = fbody.match(/\((\w+)/m)
+          , expect
+          ;
+        if(Array.isArray(vari) && vari.length > 0) {
+          var match = fbody.match(new RegExp(vari[1] + "\\.\\w", "gm"));
+          if(match) {
+            expect = match.length;
+            current_test = {name: name, remaining: tests};
+            return f(ensure_for(name, expect, function (errors) {
+              summary(name, counts[name], errors);
+              run_tests(tests);
+            }));
+          } else {
+            summary(name, {ok: 0, fail: 1}, 
+              [' you need to add at least on `'+ vari[1] + '.*` call']);
+          }
         } else {
           summary(name, {ok: 0, fail: 1}, 
-            [' you need to add at least on `'+ vari[1] + '.*` call']);
+            [' `assert` must be the first argument of your callback']);
         }
-      } else {
-        summary(name, {ok: 0, fail: 1}, 
-          [' `assert` must be the first argument of your callback']);
+        counts._totals.fail++;
+        run_tests(tests);
       }
-      counts._totals.fail++;
-      run_tests(tests);
-    }
+    });
   }
+
   spec = function specify_test(name, f) {
     cache.push([].slice.call(arguments,0));
   };
@@ -116,9 +121,16 @@ module.exports = (function specify() {
 
   // domains a la @pgte
   function uncaughtHandler(err) {
+    err_count++;
+    if(MAX_ERRORS === err_count) {
+      process.removeAllListeners('uncaughtException');
+      err.message = "You have reached " + MAX_ERRORS + 
+        " errors so we decided to abort your tests\noriginal: " + err.message;
+      throw err;
+    }
     err = typeof err === "string" ? new Error(err) : err; // idiotpatching
     err.stacktrace = err.stack.split("\n").splice(1)
-      .map(function (l) { return l.replace(/^\s+/,""); }).join("\n");
+      .map(function (l) { return l.replace(/^\s+/,""); });
     if(current_test.errored.length !== 0) {
       summary(current_test.name, counts[current_test.name]
         , current_test.errored);

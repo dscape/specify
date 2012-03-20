@@ -60,7 +60,7 @@ specify#custom_pretty_print_just_name
 ❝ notStrictEqual 
 4 // 4
 ✗ 1/5 specify#circular_reference 
-└───── undefined
+└───── Error
 ❝ equal 
 {
  "abc": "Hello",
@@ -68,7 +68,7 @@ specify#custom_pretty_print_just_name
   "$ref": "$"
  }
 } // "undefined"
-└───── undefined
+└───── Error
 ❝ equal 
 "undefined" // {
  "abc": "Hello",
@@ -76,21 +76,30 @@ specify#custom_pretty_print_just_name
   "$ref": "$"
  }
 }
-└───── undefined
+└───── Error
 ❝ equal 
 {[1m
   "abc" : "Hello",[0m[1m // != undefined[0m[1m
   "go" : {
   }[0m[1m // != undefined[0m
 }
-└───── undefined
+└───── Error
 ❝ equal 
 {
   [1m[0m[1m// [0m[1m"abc" : "Hello",
   [0m[1m// [0m[1m"go" : {"abc":"Hello","go":{}}[0m
 }
 ✗ 0/1 specify#cascading_sync 
-└───── undefined
+└───── No error
 ❝ ok false
+✗ 0/1 specify#throws 
+└───── bla
+❝ equal 
+"uncaught" // {
+ "stacktrace": [
+  "at EventEmitter.uncaughtHandler (/Users/dscape/Desktop/dev/specify/specify.js:131:41)",
+  "at EventEmitter.emit (events.js:88:20)"
+ ]
+}
 ✔ 2/2 specify#comments 
-✗ 20/41 summary 
+✗ 20/42 summary 

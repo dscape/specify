@@ -11,9 +11,9 @@ module.exports = function default_reporter(name, report, errors) {
   console.log(name.cyan + " ");
   errors.forEach(function(err) {
     if(typeof err === "string") {
-      console.log('└───── '.grey + err);
+      console.log('└───── '.grey + (err || "Error"));
     } else {
-      console.log('└───── '.grey + err.msg);
+      console.log('└───── '.grey + (err.msg || "Error"));
       process.stdout.write('❝ '.grey + err.assert + ' ');
       if(err.assert === "ok") {
         console.log(err.args[0]);

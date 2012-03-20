@@ -67,6 +67,22 @@ specify('specify#async', function(assert) {
   }, 1);
 });
 
+specify('specify#timeout', 50, function(assert) {
+  // reset summary function
+  assert.ok(true);
+  setTimeout(function () {
+    assert.ok(true, "was true");
+  }, 100);
+});
+
+specify('specify#timeout_after', 100, function(assert) {
+  // reset summary function
+  assert.ok(true);
+  setTimeout(function () {
+    assert.ok(true, "was true");
+  }, 10);
+});
+
 specify('specify#more_assertions_than_asserts', function(assert) {
   assert.expect(5);
   for(var i in [1,2,3,4,5]) {

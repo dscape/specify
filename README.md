@@ -84,6 +84,18 @@ $ node index.js
 ✗ 2/3 summary
 ```
 
+## timeouts
+
+`specify` supports timeouts, it throws an exception when the timeout is reached and handles it like any uncaught exception.
+
+``` js
+specify('foo', 50, function (assert) {
+  call_to_db_that_takes_a_long_time(function (data) {
+    assert.equal(data, 'foo');
+  });
+});
+```
+
 <a name="reporters"/>
 # reporters
 
@@ -116,17 +128,6 @@ specify('specify#custom_reporter_from_function', function(assert) {
 # roadmap / limitations
 
 pull requests are welcome!
-
-## timeouts
-
-``` js
-specify('foo', function (assert) {
-  call_to_db_that_takes_a_long_time(function (data) {
-    assert.timeout(15); // 15 ms
-    assert.equal(data, 'foo');
-  });
-});
-```
 
 ## detect comments in static analysis step
 

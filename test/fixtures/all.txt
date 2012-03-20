@@ -21,6 +21,16 @@ specify#custom_pretty_print :: [{"msg":"i see dead people","assert":"ok","args":
 ❝ ok false
 specify#custom_pretty_print_just_name
 ✔ 1/1 specify#async 
+✗ 1/2 specify#timeout 
+└───── Timeout
+❝ equal 
+"uncaught" // {
+ "stacktrace": [
+  "at Object._onTimeout (/Users/dscape/Desktop/dev/specify/specify.js:82:23)",
+  "at Timer.ontimeout (timers.js:84:39)"
+ ]
+}
+✔ 2/2 specify#timeout_after 
 ✔ 5/5 specify#more_assertions_than_asserts 
 ✗ 0/1 specify#differences:ok 
 └───── Should be true
@@ -93,4 +103,4 @@ specify#custom_pretty_print_just_name
 └───── No error
 ❝ ok false
 ✔ 2/2 specify#comments 
-✗ 20/41 summary 
+✗ 23/45 summary 

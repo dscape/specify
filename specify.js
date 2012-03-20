@@ -16,7 +16,7 @@ require('fs').readdirSync(path.join(__dirname, 'reporters'))
 module.exports = (function specify() {
   var cache     = []
     , counts    = { _totals: {ok: 0, fail: 0} }
-    , spec, summary, def_summary, current_test = {}
+    , spec, summary, def_summary, timer, current_test = {}
     ;
   def_summary = summary = reporters['default.js'];
   function ensure_for(test, expect, done) {
@@ -47,17 +47,28 @@ module.exports = (function specify() {
   }
   function run_tests(tests) {
     process.nextTick(function () { 
+      if(timer) {
+        clearTimeout(timer);
+        timer = undefined;
+      }
       if(tests.length === 0) {
+        process.removeAllListeners('uncaughtException');
         summary('summary', counts._totals);
         process.exit(counts._totals.fail === 0 ? 0 : -1);
       }
       else {
-        var test   = tests.shift()
-          , name   = test[0]
-          , f      = test[1]
-          , fbody  = f.toString()
-          , vari   = fbody.match(/\((\w+)/m)
+        var test    = tests.shift()
+          , name    = test[0]
+          , timeout = test[1]
+          , f       = test[2]
           , expect
+          ;
+        if(typeof timeout === "function") {
+          f = timeout;
+          timeout = undefined;
+        }
+        var fbody   = f.toString()
+          , vari    = fbody.match(/\((\w+)/m)
           ;
         if(Array.isArray(vari) && vari.length > 0) {
           var match = fbody.match(new RegExp(vari[1] + "\\.\\w", "gm"));
@@ -66,6 +77,11 @@ module.exports = (function specify() {
             current_test = {name: name, remaining: tests};
             process.removeAllListeners('uncaughtException');
             process.on('uncaughtException', uncaughtHandler);
+            if(timeout) {
+              timer = setTimeout(function (){
+                throw new Error("Timeout");
+              }, timeout);
+            }
             return f(ensure_for(name, expect, function (errors) {
               summary(name, counts[name], errors);
               run_tests(tests);

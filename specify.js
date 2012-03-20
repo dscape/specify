@@ -100,6 +100,8 @@ module.exports = (function specify() {
     summary = def_summary;
   };
   spec.run = function run_all_tests(filter) {
+    process.removeAllListeners('uncaughtException');
+    process.on('uncaughtException', uncaughtHandler);
     console.log();
     console.log(" ", module.parent.filename.replace(process.cwd(), ""));
     console.log();
@@ -142,9 +144,6 @@ module.exports = (function specify() {
     }
     run_tests(current_test.remaining);
   }
-
-  process.removeAllListeners('uncaughtException');
-  process.on('uncaughtException', uncaughtHandler);
 
   return spec;
 })();

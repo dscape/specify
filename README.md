@@ -139,20 +139,6 @@ specify('foo', function (assert) {
 });
 ```
 
-## prevent invocation of functions once assert fails
-
-``` js
-specify('foo', function (assert) {
-  var err = new Error()
-    , body
-    ;
-  assert.ok(!err);
-  // this throws cause undefined.status throws
-  assert.equal(body.status, "testing");
-  // ideally this should not be run
-});
-```
-
 <a name="samples"/>
 # samples
 

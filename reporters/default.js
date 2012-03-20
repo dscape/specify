@@ -3,7 +3,7 @@ var colors  = require('colors')
   , decycle = require('cycle').decycle
   ;
 
-module.exports = function default_reporter(name, report, errors){
+module.exports = function default_reporter(name, report, errors) {
   errors = errors || [];
   var symbol = report.fail === 0 ? ('✔'.green) : ('✗'.red);
   process.stdout.write(symbol + ' ');

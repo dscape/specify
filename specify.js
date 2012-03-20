@@ -5,18 +5,21 @@ var assert     = require('assert')
     [ 'ok', 'equal', 'notEqual', 'deepEqual', 'notDeepEqual'
     , 'strictEqual', 'notStrictEqual' ]
   ;
+
 require('fs').readdirSync(path.join(__dirname, 'reporters'))
   .forEach(function(reporter) {
     reporters[reporter]=require(path.join(__dirname, 'reporters', reporter));
 });
+
 module.exports = (function specify() {
   var cache     = []
     , counts    = { _totals: {ok: 0, fail: 0} }
-    , spec, summary, def_summary
+    , spec, summary, def_summary, current_test = {}
     ;
   def_summary = summary = reporters['default.js'];
   function ensure_for(test, expect, done) {
     var ensure = {}, count  = expect, errored = [];
+    current_test.errored = errored;
     assertions.forEach(function(assertion) {
       counts[test] = {ok: 0, fail: 0};
       ensure[assertion] = function () {
@@ -57,6 +60,7 @@ module.exports = (function specify() {
         var match = fbody.match(new RegExp(vari[1] + "\\.\\w", "gm"));
         if(match) {
           expect = match.length;
+          current_test = {name: name, remaining: tests};
           return f(ensure_for(name, expect, function (errors) {
             summary(name, counts[name], errors);
             run_tests(tests);
@@ -109,5 +113,26 @@ module.exports = (function specify() {
       run_tests(cache);
     }
   };
+
+  // domains a la @pgte
+  function uncaughtHandler(err) {
+    err = typeof err === "string" ? new Error(err) : err; // idiotpatching
+    err.stacktrace = err.stack.split("\n").splice(1)
+      .map(function (l) { return l.replace(/^\s+/,""); }).join("\n");
+    if(current_test.errored.length !== 0) {
+      summary(current_test.name, counts[current_test.name]
+        , current_test.errored);
+    } else {
+      counts._totals.fail++;
+      counts[current_test.name].fail++;
+      summary(current_test.name, counts[current_test.name]
+        , [{msg: err.message || err, assert: "equal", args: ["uncaught", err]}]);
+    }
+    run_tests(current_test.remaining);
+  }
+
+  process.removeAllListeners('uncaughtException');
+  process.on('uncaughtException', uncaughtHandler);
+
   return spec;
 })();

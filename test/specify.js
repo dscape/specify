@@ -124,9 +124,13 @@ specify('specify#cascading_sync', function(assert) {
   var err = new Error("Testing")
     , body
     ;
- assert.expect(1);
- if(err) { assert.ok(!err); }
- else { assert.equal(body.name, "this should not run"); }
+ assert.ok(!err, "No error");
+ assert.equal(body.name, "Body has name");
+});
+
+specify('specify#throws', function(assert) {
+  throw "bla";
+  assert.ok(true);
 });
 
 specify('specify#comments', function (assert) {

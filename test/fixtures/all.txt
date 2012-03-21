@@ -26,8 +26,8 @@ specify#custom_pretty_print_just_name
 ❝ equal 
 "uncaught" // {
  "stacktrace": [
-  "at Object._onTimeout (/Users/dscape/Desktop/dev/specify/specify.js:82:23)",
-  "at Timer.ontimeout (timers.js:84:39)"
+  
+  
  ]
 }
 ✔ 2/2 specify#timeout_after 
@@ -102,5 +102,14 @@ specify#custom_pretty_print_just_name
 ✗ 0/1 specify#cascading_sync 
 └───── No error
 ❝ ok false
+✗ 0/1 specify#throws 
+└───── bla
+❝ equal 
+"uncaught" // {
+ "stacktrace": [
+  
+  
+ ]
+}
 ✔ 2/2 specify#comments 
-✗ 23/45 summary 
+✗ 23/46 summary 

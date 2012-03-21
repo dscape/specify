@@ -1,7 +1,16 @@
 
   /test/specify.js
 
+✗ 0/1 specify#throws 
+└───── bla
+❝ equal 
+"uncaught" // {
+ "stacktrace": [
+  
+  
+ ]
+}
 ✗ 0/1 specify#cascading_sync 
 └───── No error
 ❝ ok false
-✗ 0/1 summary 
+✗ 0/2 summary 

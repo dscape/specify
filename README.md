@@ -35,6 +35,49 @@ specify('more_assertions_than_asserts', function(assert) {
 
 `specify` is standalone, you don't need any special binaries to run it.
 
+you can also run single functions:
+
+``` js
+var specify = require('specify')
+  , request = require('request')
+  ;
+
+specify.run(
+
+  function (assert) {
+
+    var get = { uri: "http://someservice.com/1/apps/dscape", json: true }
+      , del = { uri: "http://someservice.com/1/apps/dscape", method: "DELETE"
+              , json : true }
+      , app_name
+      ;
+
+    request(get, function (err, _, body) {
+
+      assert.equal(err,null);
+      assert.ok(body.rows);
+      assert.ok(body.total_rows >= 1);
+      assert.ok(body.rows.length >= 1);
+
+      app_name = body.rows[0].value.app_name;
+      del.uri += "/" + app_name;
+
+      request(del, function (err, resp, body) {
+
+        assert.equal(err,null);
+        assert.equal(resp.statusCode, 200);
+        assert.equal(body.app.name, app_name);
+        assert.equal(body.app.user,"dscape");
+
+      });
+
+    });
+
+  }
+
+);
+```
+
 <a name="installation"/>
 # installation
 
@@ -86,7 +129,9 @@ specify('foo', 50, function (assert) {
 <a name="reporters"/>
 # reporters
 
-if you feel like the output sent to `stdout` is ugly you can do `npm install colors`. if thats still not good enough, write your own reporter and send in a pull request. now use it:
+if you feel like the output sent to `stdout` is ugly you can write your own reporter and send in a pull request.
+
+now use it:
 
 ``` js
 specify('specify#ask_for_a_specific_reporter', function(assert) {
@@ -130,7 +175,7 @@ specify('foo', function (assert) {
 <a name="samples"/>
 # samples
 
-check out the tests in `test/specify.js`
+samples are available in the `/test` folder
 
 <a name="contribute"/>
 # contribute

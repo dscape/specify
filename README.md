@@ -20,7 +20,7 @@ specify.run();
 
 the assert calls are callback functions that wrap the assert module. `specify` figures out how many callbacks you are calling by [static-analysis]. putting it simply it counts the number of times you wrote `assert.`. when that number of assertions is met, or when a timeout occurs, that test is complete and we can execute the next one.
 
-static analysis does not work for a `for loop`. in that case you can use `assert.expect(nr)` to tell specify how many assertions to expect:
+static analysis does not work for a `for loop` and some other flow control constructs. in that case you can use `assert.expect(nr)` to tell specify how many assertions to expect:
 
 ``` js
 specify('more_assertions_than_asserts', function(assert) {

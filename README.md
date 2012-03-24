@@ -29,9 +29,17 @@ specify('more_assertions_than_asserts', function(assert) {
 });
 ```
 
-`specify` runs tests in one by one, not in parallel. this means that if you set `assert.expect` higher than the number of asserts you actually do the rest of the tests wont run, cause you will never finish the current test.
+`specify` runs tests in one by one, not in parallel. this means that if you set `assert.expect` higher than the number of asserts you actually do the rest of the tests wont run, cause you will never finish the current test. you can circumvent this by setting a timeout:
 
-because tests are serialized `specify` can catch uncaught exceptions and continue to run. you will get a report about the error that was throw somewhere in your stack. this is analogous to some of the functionality normally calls domains.
+``` js
+specify('foo', 50, function (assert) {
+  call_to_db_that_takes_a_long_time(function (data) {
+    assert.equal(data, 'foo');
+  });
+});
+```
+
+because tests are serialized `specify` can catch uncaught exceptions and continue to run. you will get a report about the error that was throw somewhere in your stack. this is analogous to the functionality the community refers to as `domains`.
 
 `specify` is standalone, you don't need any special binaries to run it.
 
@@ -111,19 +119,6 @@ specify('baz', function (assert) {
 });
 
 specify.run(filters);
-```
-
-<a name="timeouts"/>
-## timeouts
-
-`specify` supports timeouts, it throws an exception when the timeout is reached and handles it like any uncaught exception.
-
-``` js
-specify('foo', 50, function (assert) {
-  call_to_db_that_takes_a_long_time(function (data) {
-    assert.equal(data, 'foo');
-  });
-});
 ```
 
 <a name="reporters"/>

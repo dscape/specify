@@ -1,7 +1,9 @@
 <a name="specify"/>
 # specify
 
-`specify` is the simplest way i could think to do node.js testing. it works with sync code and async code all the same.
+`specify` is the simplest way i could think to do node.js testing. 
+
+it works with sync code and async code all the same.
 
 ``` js
 var specify = require('specify');
@@ -16,7 +18,7 @@ specify('create_by_secret', function (assert) {
 specify.run();
 ```
 
-the assert calls are callback functions that wrap the assert module. `specify` figures out how many callbacks you are calling by [static-analysis]. putting it simply it means i count the numbers of time you wrote `assert.`. when that number of assertions is met, or when a timeout occurs, that test is complete and we can execute the next one.
+the assert calls are callback functions that wrap the assert module. `specify` figures out how many callbacks you are calling by [static-analysis]. putting it simply it counts the number of times you wrote `assert.`. when that number of assertions is met, or when a timeout occurs, that test is complete and we can execute the next one.
 
 static analysis does not work for a `for loop`. in that case you can use `assert.expect(nr)` to tell specify how many assertions to expect:
 

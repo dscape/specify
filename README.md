@@ -31,7 +31,7 @@ specify('more_assertions_than_asserts', function(assert) {
 });
 ```
 
-`specify` runs tests in one by one, not in parallel. this means that if you set `assert.expect` higher than the number of asserts you actually run test execution will stop, and your current test will never finish. you can circumvent this by setting a timeout:
+`specify` runs tests in one by one, not in parallel. this means that if you set `assert.expect` higher than the number of `assert.` functin calls the execution will stop, and your current test will never finish. you can circumvent this by setting a timeout:
 
 ``` js
 specify('foo', 50, function (assert) {

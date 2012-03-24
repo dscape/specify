@@ -118,6 +118,10 @@ module.exports = (function specify() {
     summary = def_summary;
   };
   spec.run = function run_all_tests(filter) {
+    if(typeof filter === "function") {
+      cache  = [["main", filter]];
+      filter = [];
+    }
     console.log();
     console.log(" ", module.parent.filename.replace(process.cwd(), ""));
     console.log();

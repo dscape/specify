@@ -16,9 +16,9 @@ specify('create_by_secret', function (assert) {
 specify.run();
 ```
 
-the assert calls are callback functions that wrap the assert module. `specify` figures out how many callbacks you are calling and will determine your test is finished when that number is met or when a timeout occurs (if you specify one).
+the assert calls are callback functions that wrap the assert module. `specify` figures out how many callbacks you are calling by [static-analysis]. putting it simply it means i count the numbers of time you wrote `assert.`. when that number of assertions is met, or when a timeout occurs, that test is complete and we can execute the next one.
 
-the way i figure out how many asserts you will run is by [static-analysis]. putting it simply it means i count the numbers of time you wrote `assert.`. this doesn't work for a `for loop`, in that case you can use `assert.expect(nr)` to tell specify how many assertions to expect:
+static analysis does not work for a `for loop`. in that case you can use `assert.expect(nr)` to tell specify how many assertions to expect:
 
 ``` js
 specify('more_assertions_than_asserts', function(assert) {

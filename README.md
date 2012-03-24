@@ -16,11 +16,9 @@ specify('create_by_secret', function (assert) {
 specify.run();
 ```
 
-unlike normal assert calls that throw, `specify` will always run all of the assertions.
+the assert calls are callback functions that wrap the assert module. `specify` figures out how many callbacks you are calling and will determine your test is finished when that number is met or when a timeout occurs (if you specify one).
 
-the assert calls are functions that wrap the assert module. when you call them you are actually calling a callback.
-
-the way i figure out how many asserts you will run is by [static-analysis]. putting it simply it means i count the numbers of time you wrote `assert.`. this doesn't work for a `for loop`, so in that case you can do something like this:
+the way i figure out how many asserts you will run is by [static-analysis]. putting it simply it means i count the numbers of time you wrote `assert.`. this doesn't work for a `for loop`, in that case you can use `assert.expect(nr)` to tell specify how many assertions to expect:
 
 ``` js
 specify('more_assertions_than_asserts', function(assert) {
@@ -33,9 +31,11 @@ specify('more_assertions_than_asserts', function(assert) {
 
 `specify` runs tests in one by one, not in parallel. this means that if you set `assert.expect` higher than the number of asserts you actually do the rest of the tests wont run, cause you will never finish the current test.
 
+because tests are serialized `specify` can catch uncaught exceptions and continue to run. you will get a report about the error that was throw somewhere in your stack. this is analogous to some of the functionality normally calls domains.
+
 `specify` is standalone, you don't need any special binaries to run it.
 
-you can also run single functions:
+if you think all these `specify` functions make your code look bloated you can also run a single function:
 
 ``` js
 var specify = require('specify')
@@ -153,22 +153,6 @@ specify('specify#custom_reporter_from_function', function(assert) {
     assert.ok(false, 'i see dead people');
     assert.ok(true);
   },1);
-});
-```
-
-<a name="roadmap"/>
-# roadmap / limitations
-
-pull requests are welcome!
-
-## detect comments in static analysis step
-
-``` js
-specify('foo', function (assert) {
-  // right now this requires you to do 
-  // assert.expect(1);
-  assert.equal('foo', 'foo');
-  //assert.ok(true);
 });
 ```
 

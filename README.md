@@ -1,7 +1,7 @@
 <a name="specify"/>
 # specify
 
-`specify` is the simplest way i could think to do node.js testing. 
+`specify` is the simplest way i could think to do node.js testing
 
 it works with sync code and async code all the same.
 

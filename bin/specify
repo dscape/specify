@@ -1,0 +1,25 @@
+#!/usr/bin/env node
+var fs        = require("fs")
+  , path      = require("path")
+  , exec      = require('child_process').exec
+  , base_path = path.resolve(".", "tests")
+  , dirs      = fs.readdirSync(base_path)
+  , files
+  ;
+
+for(var dir in dirs) {
+  var dir_path = path.resolve(base_path, dirs[dir]);
+  if(fs.statSync(dir_path).isDirectory()) {
+    files = fs.readdirSync(dir_path);
+    for (var file in files) {
+      var file_path = path.resolve(dir_path, files[file]);
+      if(/\.js$|\.node$/.test(file_path)) {
+        exec("node " + file_path, function (err, stdout, stderr) {
+          if (!(err || stderr)) {
+            process.stdout.write(stdout);
+          }
+        });
+      }
+    }
+  }
+}

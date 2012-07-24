@@ -4,8 +4,31 @@ var fs        = require("fs")
   , exec      = require('child_process').exec
   , base_path = path.resolve(".", "tests")
   , dirs      = fs.readdirSync(base_path)
+  , stack     = []
+  , success   = true
   , files
+  , test
   ;
+
+function runTests(tests, previousStatus) {
+  if(success) {
+    success = previousStatus;
+  }
+  if(tests[0]) {
+    exec("node " + tests[0], ppTest(tests));
+  } else {
+    return process.exit(success ? 0 : 1);
+  }
+}
+
+function ppTest (tests) {
+  var file_path = tests.shift();
+  return function (err, stdout, stderr) {
+    console.log(stdout);
+    console.log(stderr);
+    runTests(tests, !(err || stderr));
+  };
+}
 
 for(var dir in dirs) {
   var dir_path = path.resolve(base_path, dirs[dir]);
@@ -14,12 +37,10 @@ for(var dir in dirs) {
     for (var file in files) {
       var file_path = path.resolve(dir_path, files[file]);
       if(/\.js$|\.node$/.test(file_path)) {
-        exec("node " + file_path, function (err, stdout, stderr) {
-          if (!(err || stderr)) {
-            process.stdout.write(stdout);
-          }
-        });
+        stack.push(file_path);
       }
     }
   }
 }
+
+runTests(stack, true);

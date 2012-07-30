@@ -40,8 +40,8 @@ function runTests(tests, previousStatus) {
 function ppTest (tests) {
   var file_path = tests.shift();
   return function (err, stdout, stderr) {
-    console.log(stdout);
-    console.log(stderr);
+    process.stdout.write(stdout);
+    process.stdout.write(stderr);
     runTests(tests, !(err || stderr));
   };
 }

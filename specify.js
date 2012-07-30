@@ -18,7 +18,8 @@ module.exports = (function specify() {
     , counts    = { _totals: {ok: 0, fail: 0} }
     , spec, summary, def_summary, timer, current_test = {}
     , default_reporter = process.env.SPECIFY_REPORTER ?
-      Object.keys(reporters).indexOf(process.env.SPECIFY_REPORTER) === -1 ?
+      Object.keys(reporters)
+      .indexOf(process.env.SPECIFY_REPORTER + ".js") === -1 ?
         'default' : 
         process.env.SPECIFY_REPORTER :
       'default'

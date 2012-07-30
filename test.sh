@@ -11,11 +11,11 @@ if [ $? -eq 0 ]; then
     if [ $? -eq 0 ]; then
       echo "ok";
     else
-      return -1;
+      return 0;
     fi
   else
-    return -1;
+    return 0;
   fi
 else
-  return -1;
+  return 0;
 fi

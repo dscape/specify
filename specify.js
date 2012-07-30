@@ -103,7 +103,7 @@ module.exports = (function specify() {
   spec = function specify_test(name, f) {
     cache.push([].slice.call(arguments,0));
   };
-  spec.summary = function (f) {
+  spec.reporter = function (f) {
     if (typeof f === 'function') {
       summary = f;
       return;

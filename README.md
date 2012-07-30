@@ -132,7 +132,7 @@ now use it:
 
 ``` js
 specify('specify#ask_for_a_specific_reporter', function(assert) {
-  specify.summary('my_awesome_reporter');
+  specify.reporter('my_awesome_reporter');
   setTimeout(function (){
     assert.ok(true);
   },1);
@@ -143,7 +143,7 @@ you can also do this with a function if you like:
 
 ``` js
 specify('specify#custom_reporter_from_function', function(assert) {
-  specify.summary(function (name, report, errors) {
+  specify.reporter(function (name, report, errors) {
     console.log(name);
   });
   setTimeout(function () {

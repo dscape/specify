@@ -111,5 +111,6 @@ specify#custom_pretty_print_just_name
   
  ]
 }
-✔ 2/2 specify#comments 
-✗ 23/46 summary 
+{"name":"specify#json_reporter","report":{"ok":1,"fail":0,"total":1},"errors":[]}
+{"name":"specify#comments","report":{"ok":2,"fail":0,"total":2},"errors":[]}
+{"name":"summary","report":{"ok":24,"fail":23,"total":47},"errors":[]}

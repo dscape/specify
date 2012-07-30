@@ -37,22 +37,22 @@ specify('specify#assertion_with_optional_message', function(assert) {
 });
 
 specify('specify#custom_pretty_print', function(assert) {
-  // set a custom summary pretty print function
-  specify.summary(function (name, report, errors) {
+  // set a custom reporter pretty print function
+  specify.reporter(function (name, report, errors) {
     console.log(name + ' :: ' + JSON.stringify(errors));
   });
   assert.ok(false, 'i see dead people');
 });
 
 specify('specify#ask_for_a_specific_reporter', function(assert) {
-  // reset summary function
-  specify.summary('default');
+  // reset reporter function
+  specify.reporter('default');
   assert.ok(false, 'back to default');
 });
 
 specify('specify#custom_pretty_print_just_name', function(assert) {
-  // set a custom summary pretty print function
-  specify.summary(function (name, report, errors) {
+  // set a custom repoter pretty print function
+  specify.reporter(function (name, report, errors) {
     console.log(name);
   });
   assert.ok(false, 'i see dead people');
@@ -60,15 +60,14 @@ specify('specify#custom_pretty_print_just_name', function(assert) {
 });
 
 specify('specify#async', function(assert) {
-  // reset summary function
-  specify.summary();
+  // reset reporter function
+  specify.reporter();
   setTimeout(function () {
     assert.ok(true, "was true");
   }, 1);
 });
 
 specify('specify#timeout', 50, function(assert) {
-  // reset summary function
   assert.ok(true);
   setTimeout(function () {
     assert.ok(true, "was true");
@@ -76,7 +75,6 @@ specify('specify#timeout', 50, function(assert) {
 });
 
 specify('specify#timeout_after', 100, function(assert) {
-  // reset summary function
   assert.ok(true);
   setTimeout(function () {
     assert.ok(true, "was true");
@@ -146,6 +144,11 @@ specify('specify#cascading_sync', function(assert) {
 
 specify('specify#throws', function(assert) {
   throw "bla";
+  assert.ok(true);
+});
+
+specify('specify#json_reporter', function (assert) {
+  specify.reporter('json');
   assert.ok(true);
 });
 

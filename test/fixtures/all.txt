@@ -1,4 +1,3 @@
-
   /test/specify.js
 
 ✗ 0/1 specify:no_arguments_in_cb 

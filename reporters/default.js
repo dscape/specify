@@ -4,6 +4,10 @@ var colors  = require('colors')
   ;
 
 module.exports = function default_reporter(name, report, errors) {
+  if(typeof report === "undefined") {
+    console.log("  " + name);
+    return console.log();
+  }
   errors = errors || [];
   var symbol = report.fail === 0 ? ('✔'.green) : ('✗'.red);
   process.stdout.write(symbol + ' ');

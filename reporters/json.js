@@ -3,6 +3,9 @@ var difflet = require('difflet')
   ;
 
 module.exports = function default_reporter(name, report, errors) {
+  if(typeof report === "undefined") {
+    return console.log({name: name});
+  }
   report.total = (report.ok+report.fail);
   report = {name: name, report: report};
   report.errors = (errors || []).map(function(err) {

@@ -17,7 +17,11 @@ module.exports = (function specify() {
   var cache     = []
     , counts    = { _totals: {ok: 0, fail: 0} }
     , spec, summary, def_summary, timer, current_test = {}
-    , default_reporter = process.env.SPECIFY_REPORTER || 'default'
+    , default_reporter = process.env.SPECIFY_REPORTER ?
+      Object.keys(reporters).indexOf(process.env.SPECIFY_REPORTER) === -1 ?
+        'default' : 
+        process.env.SPECIFY_REPORTER :
+      'default'
     ;
   def_summary = summary = reporters[default_reporter + '.js'];
   function ensure_for(test, expect, done) {
@@ -123,9 +127,7 @@ module.exports = (function specify() {
       cache  = [["main", filter]];
       filter = [];
     }
-    console.log();
-    console.log(" ", module.parent.filename.replace(process.cwd(), ""));
-    console.log();
+    summary(module.parent.filename.replace(process.cwd(), ""));
     filter = typeof filter === "string" ? [filter] : filter;
     if(filter && filter.length !== 0) {
       var filtered_cache = [];

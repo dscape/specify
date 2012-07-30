@@ -7,7 +7,7 @@ var fs        = require("fs")
   , dirs      = fs.readdirSync(base_path)
   , stack     = []
   , success   = true
-  , args      = {env: {}}
+  , args      = {env: process.env}
   , files
   , test
   ;

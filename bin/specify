@@ -7,15 +7,17 @@ var fs        = require("fs")
   , dirs      = fs.readdirSync(base_path)
   , stack     = []
   , success   = true
+  , args      = {env: {}}
   , files
   , test
   ;
 
 // set env vars in a platform agnostic way
-(argv.e||[]).forEach(function (env_var) {
+(Array.isArray(argv.e) ? argv.e : argv.e ? [argv.e] : [])
+.forEach(function (env_var) {
   if(env_var.indexOf("=")!==-1) {
     var split = env_var.split("=");
-    process.env[split[0]] = split[1];
+    args.env[split[0]] = split[1];
   }
 });
 
@@ -24,7 +26,7 @@ function runTests(tests, previousStatus) {
     success = previousStatus;
   }
   if(tests[0]) {
-    exec("node " + tests[0], ppTest(tests));
+    exec("node " + tests[0], args, ppTest(tests));
   } else {
     return process.exit(success ? 0 : 1);
   }

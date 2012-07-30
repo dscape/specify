@@ -17,8 +17,9 @@ module.exports = (function specify() {
   var cache     = []
     , counts    = { _totals: {ok: 0, fail: 0} }
     , spec, summary, def_summary, timer, current_test = {}
+    , default_reporter = process.env.SPECIFY_REPORTER || 'default'
     ;
-  def_summary = summary = reporters['default.js'];
+  def_summary = summary = reporters[default_reporter + '.js'];
   function ensure_for(test, expect, done) {
     var ensure = {}, count  = expect, errored = [];
     current_test.errored = errored;

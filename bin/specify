@@ -21,6 +21,11 @@ var fs        = require("fs")
   }
 });
 
+// set a reporter
+if(typeof argv.r === "string") {
+  args.env.SPECIFY_REPORTER = argv.r;
+}
+
 function runTests(tests, previousStatus) {
   if(success) {
     success = previousStatus;

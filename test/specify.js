@@ -120,7 +120,6 @@ specify('specify#differences:notstrictequal', function(assert) {
   assert.notStrictEqual(4, 4, "3 4 knock on the door");
 });
 
-
 specify('specify#circular_reference', function(assert) {
   function foo() {
     this.abc = "Hello"; this.go = this;

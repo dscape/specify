@@ -1,3 +1,4 @@
+
   /test/specify.js
 
 ✗ 0/1 specify#throws 
@@ -9,7 +10,16 @@
   
  ]
 }
-✗ 0/1 specify#cascading_sync 
+✗ 0/2 specify#cascading_sync 
 └───── No error
 ❝ ok false
-✗ 0/2 summary 
+└───── Cannot read property 'name' of undefined
+❝ equal 
+"uncaught" // {
+ "stacktrace": [
+  
+  
+  
+ ]
+}
+✗ 0/3 summary 

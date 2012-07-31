@@ -1,16 +1,27 @@
 #!/usr/bin/env node
 var fs        = require("fs")
   , path      = require("path")
+  , tty       = require('tty')
   , exec      = require('child_process').exec
   , argv      = require('optimist').argv
-  , base_path = path.resolve(".", "tests")
-  , dirs      = fs.readdirSync(base_path)
   , stack     = []
   , success   = true
   , args      = {env: process.env}
+  , base_path
+  , dirs
   , files
   , test
   ;
+
+// work for /test and /tests
+// will throw otherwise
+try {
+  base_path = path.resolve(".", "tests");
+  dirs      = fs.readdirSync(base_path);
+} catch (exc) {
+  base_path = path.resolve(".", "test");
+  dirs      = fs.readdirSync(base_path);
+}
 
 // set env vars in a platform agnostic way
 (Array.isArray(argv.e) ? argv.e : argv.e ? [argv.e] : [])
@@ -20,6 +31,21 @@ var fs        = require("fs")
     args.env[split[0]] = split[1];
   }
 });
+
+// try to get tty size to give to child process
+var isatty = tty.isatty(1) && tty.isatty(2)
+  , width  = isatty
+    ? process.stdout.getWindowSize
+      ? process.stdout.getWindowSize(1)[0]
+      : tty.getWindowSize
+        ? tty.getWindowSize()[1]
+        : null
+    : null
+  ;
+
+if(typeof width === "number") {
+  args.env.SPECIFY_MAXCOLS = width;
+}
 
 // set a reporter
 if(typeof argv.r === "string") {

@@ -1,0 +1,2 @@
+[31m✗[39m /test/specify/compact.js ............................. 2/15
+[32m✔[39m /test/specify/singletest.js ........................... 1/1

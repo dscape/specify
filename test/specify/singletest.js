@@ -1,4 +1,4 @@
-var specify = require('../specify');
+var specify = require('../../specify');
 
 specify.run(
   function(assert) {

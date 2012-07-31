@@ -5,13 +5,15 @@ var colors  = require('colors')
 
 module.exports = function default_reporter(name, report, errors) {
   if(typeof report === "undefined") {
+    console.log();
     console.log("  " + name);
     return console.log();
   }
   errors = errors || [];
-  var symbol = report.fail === 0 ? ('✔'.green) : ('✗'.red);
+  var failed = report.fail + report.notrun;
+  var symbol = failed === 0 ? ('✔'.green) : ('✗'.red);
   process.stdout.write(symbol + ' ');
-  process.stdout.write(report.ok + '/' + (report.ok+report.fail) + ' ');
+  process.stdout.write(report.ok + '/' + (report.ok+failed) + ' ');
   console.log(name.cyan + " ");
   errors.forEach(function(err) {
     if(typeof err === "string") {

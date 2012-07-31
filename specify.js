@@ -5,9 +5,10 @@ var assert     = require('assert')
     [ 'ok', 'equal', 'notEqual', 'deepEqual', 'notDeepEqual'
     , 'strictEqual', 'notStrictEqual' ]
   , err_count  = 0
-  , MAX_ERRORS = 1000
+  , MAX_ERRORS = process.env.SPECIFY_MAX_ERRORS || 1000
   ;
 
+// read available reporters
 require('fs').readdirSync(path.join(__dirname, 'reporters'))
   .forEach(function(reporter) {
     reporters[reporter]=require(path.join(__dirname, 'reporters', reporter));
@@ -15,21 +16,24 @@ require('fs').readdirSync(path.join(__dirname, 'reporters'))
 
 module.exports = (function specify() {
   var cache     = []
-    , counts    = { _totals: {ok: 0, fail: 0} }
+    , counts    = { _totals: {ok: 0, fail: 0, notrun: 0, thrown: 0} }
     , spec, summary, def_summary, timer, current_test = {}
-    , default_reporter = process.env.SPECIFY_REPORTER ?
-      Object.keys(reporters)
-      .indexOf(process.env.SPECIFY_REPORTER + ".js") === -1 ?
-        'default' : 
-        process.env.SPECIFY_REPORTER :
-      'default'
+    , default_reporter = process.env.SPECIFY_REPORTER
+      ? Object.keys(reporters)
+        .indexOf(process.env.SPECIFY_REPORTER + ".js") === -1
+        ? 'default'
+        : process.env.SPECIFY_REPORTER
+      : 'default'
     ;
+
   def_summary = summary = reporters[default_reporter + '.js'];
+
   function ensure_for(test, expect, done) {
     var ensure = {}, count  = expect, errored = [];
     current_test.errored = errored;
+    current_test.remaining_assertions = count;
     assertions.forEach(function(assertion) {
-      counts[test] = {ok: 0, fail: 0};
+      counts[test] = {ok: 0, fail: 0, notrun: 0, thrown: 0};
       ensure[assertion] = function () {
         try {
           assert[assertion].apply(this,arguments); 
@@ -43,6 +47,7 @@ module.exports = (function specify() {
           counts[test].fail++;
         }
         count--;
+        current_test.remaining_assertions = count;
         if(count === 0) { 
           done(errored);
         }
@@ -51,6 +56,7 @@ module.exports = (function specify() {
     ensure.expect = function (nr) { count = nr; };
     return ensure;
   }
+
   function run_tests(tests) {
     process.nextTick(function () { 
       if(timer) {
@@ -74,13 +80,14 @@ module.exports = (function specify() {
           timeout = undefined;
         }
         var fbody   = f.toString()
-          , vari    = fbody.match(/\((\w+)/m)
+          , vari    = fbody.match(/\((\w+)/m) // function (assert)
           ;
         if(Array.isArray(vari) && vari.length > 0) {
+          // assert.ok, assert.equal
           var match = fbody.match(new RegExp(vari[1] + "\\.\\w", "gm"));
           if(match) {
             expect = match.length;
-            current_test = {name: name, remaining: tests};
+            current_test = {name: name, remaining: tests, expected: expect};
             process.removeAllListeners('uncaughtException');
             process.on('uncaughtException', uncaughtHandler);
             if(timeout) {
@@ -93,11 +100,11 @@ module.exports = (function specify() {
               run_tests(tests);
             }));
           } else {
-            summary(name, {ok: 0, fail: 1}, 
+            summary(name, {ok: 0, fail: 1, notrun: 0, thrown: 0}, 
               [' you need to add at least on `'+ vari[1] + '.*` call']);
           }
         } else {
-          summary(name, {ok: 0, fail: 1}, 
+          summary(name, {ok: 0, fail: 1, notrun: 0, thrown: 0}, 
             [' `assert` must be the first argument of your callback']);
         }
         counts._totals.fail++;
@@ -109,6 +116,7 @@ module.exports = (function specify() {
   spec = function specify_test(name, f) {
     cache.push([].slice.call(arguments,0));
   };
+
   spec.reporter = function (f) {
     if (typeof f === 'function') {
       summary = f;
@@ -123,6 +131,7 @@ module.exports = (function specify() {
     }
     summary = def_summary;
   };
+
   spec.run = function run_all_tests(filter) {
     if(typeof filter === "function") {
       cache  = [["main", filter]];
@@ -157,15 +166,14 @@ module.exports = (function specify() {
     err = typeof err === "string" ? new Error(err) : err; // idiotpatching
     err.stacktrace = err.stack.split("\n").splice(1)
       .map(function (l) { return l.replace(/^\s+/,""); });
-    if(current_test.errored.length !== 0) {
-      summary(current_test.name, counts[current_test.name]
-        , current_test.errored);
-    } else {
-      counts._totals.fail++;
-      counts[current_test.name].fail++;
-      summary(current_test.name, counts[current_test.name]
-        , [{msg: err.message || err, assert: "equal", args: ["uncaught", err]}]);
-    }
+    counts[current_test.name].notrun += current_test.remaining_assertions;
+    counts._totals.notrun += current_test.remaining_assertions;
+    counts[current_test.name].thrown++;
+    counts._totals.thrown++;
+    current_test.errored.push(
+      {msg: err.message || err, assert: "equal", args: ["uncaught", err]});
+    summary(current_test.name, counts[current_test.name]
+      , current_test.errored);
     run_tests(current_test.remaining);
   }
 

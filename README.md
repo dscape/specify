@@ -7,6 +7,8 @@ it works with sync code and async code all the same
 
 please use versions `~0.6.x` for node `0.6` and `~1.0.x` for node `0.8` or superior
 
+if you don't like reading and want to see some code you can look at [nano's tests](https://github.com/dscape/nano/tree/master/tests) and learn there. also read the specify source code, its just a couple of lines of code
+
 ``` js
 var specify = require('specify');
 

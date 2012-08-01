@@ -18,7 +18,7 @@ require('fs').readdirSync(path.join(__dirname, 'reporters'))
 module.exports = (function specify() {
   var cache     = []
     , counts    = { _totals: {ok: 0, fail: 0, notrun: 0, thrown: 0} }
-    , spec, summary, def_summary, timer, current_test = {}, current_domain
+    , spec, summary, def_summary, timer, current_domain
     , default_reporter = process.env.SPECIFY_REPORTER
       ? Object.keys(reporters)
         .indexOf(process.env.SPECIFY_REPORTER + ".js") === -1
@@ -29,13 +29,18 @@ module.exports = (function specify() {
 
   def_summary = summary = reporters[default_reporter + '.js'];
 
-  function ensure_for(test, expect, done) {
+  function ensure_for(test, expect, tests, done) {
     var ensure = {}, count  = expect, errored = [];
-    current_test.errored = errored;
-    current_test.remaining_assertions = count;
+    counts[test] = {ok: 0, fail: 0, notrun: 0, thrown: 0};
+    counts[test].meta = {name: test, expected: expect, remaining: tests};
+    counts[test].meta.errored = errored;
+    counts[test].meta.remaining_assertions = expect;
+
     assertions.forEach(function(assertion) {
-      counts[test] = {ok: 0, fail: 0, notrun: 0, thrown: 0};
       ensure[assertion] = function () {
+        if(counts[test].thrown > 0) {
+          return;
+        }
         try {
           assert[assertion].apply(this,arguments); 
           counts._totals.ok++;
@@ -48,18 +53,19 @@ module.exports = (function specify() {
           counts[test].fail++;
         }
         count--;
-        current_test.remaining_assertions = count;
+        counts[test].meta.remaining_assertions = count;
         if(count === 0) { 
           done(errored);
         }
       };
     });
+
     ensure.expect = function (nr) { count = nr; };
     return ensure;
+
   }
 
   function run_tests(tests) {
-    process.nextTick(function () { 
       if(timer) {
         clearTimeout(timer);
         timer = undefined;
@@ -87,10 +93,6 @@ module.exports = (function specify() {
           var match = fbody.match(new RegExp(vari[1] + "\\.\\w", "gm"));
           if(match) {
             expect = match.length;
-            current_test = {name: name, remaining: tests, expected: expect};
-            if(current_domain && typeof current_domain.dispose==="function") {
-              current_domain.dispose();
-            }
             current_domain = domain.create();
             if(timeout) {
               timer = setTimeout(function (){
@@ -98,12 +100,14 @@ module.exports = (function specify() {
               }, timeout);
               current_domain.add(timer);
             }
-            current_domain.on('error', domainHandler);
+            current_domain.on('error', domainHandler(name));
             return current_domain.run(function () {
-              f(ensure_for(name, expect, function (errors) {
-                summary(name, counts[name], errors);
-                run_tests(tests);
-              }));
+              process.nextTick(function (){
+                f(ensure_for(name, expect, tests, function (errors) {
+                  summary(name, counts[name], errors);
+                  run_tests(tests);
+                }));
+              });
             });
           } else {
             summary(name, {ok: 0, fail: 1, notrun: 0, thrown: 0}, 
@@ -116,7 +120,6 @@ module.exports = (function specify() {
         counts._totals.fail++;
         run_tests(tests);
       }
-    });
   }
 
   spec = function specify_test(name, f) {
@@ -160,26 +163,34 @@ module.exports = (function specify() {
     }
   };
 
-  function domainHandler(err) {
-    err_count++;
-    if(MAX_ERRORS === err_count) {
-      err.message = "You have reached " + MAX_ERRORS + 
-        " errors so we decided to abort your tests\noriginal: " +
-        err.message;
-      throw err;
-    }
-    err = typeof err === "string" ? new Error(err) : err; // idiotpatching
-    err.stacktrace = err.stack.split("\n").splice(1)
-      .map(function (l) { return l.replace(/^\s+/,""); });
-    counts[current_test.name].notrun += current_test.remaining_assertions;
-    counts._totals.notrun += current_test.remaining_assertions;
-    counts[current_test.name].thrown++;
-    counts._totals.thrown++;
-    current_test.errored.push(
-      {msg: err.message || err, assert: "equal", args: ["domain", err]});
-    summary(current_test.name, counts[current_test.name]
-      , current_test.errored);
-    run_tests(current_test.remaining);
+  function domainHandler(test_name) {
+    return function (err) {
+      var current_test = counts[test_name].meta;
+      if(counts[test_name].thrown > 0) {
+        // ignore, this test already thrown at least once
+        // lets just wait for the socket to c
+        return;
+      }
+      err_count++;
+      if(MAX_ERRORS === err_count) {
+        err.message = "You have reached " + MAX_ERRORS + 
+          " errors so we decided to abort your tests\noriginal: " +
+          err.message;
+        throw err;
+      }
+      err = typeof err === "string" ? new Error(err) : err; // idiotpatching
+      err.stacktrace = err.stack.split("\n").splice(1)
+        .map(function (l) { return l.replace(/^\s+/,""); });
+      counts[current_test.name].notrun += current_test.remaining_assertions;
+      counts._totals.notrun += current_test.remaining_assertions;
+      counts[current_test.name].thrown++;
+      counts._totals.thrown++;
+      current_test.errored.push(
+        {msg: err.message || err, assert: "equal", args: ["domain", err]});
+      summary(current_test.name, counts[current_test.name]
+        , current_test.errored);
+      run_tests(current_test.remaining);
+    };
   }
 
   return spec;

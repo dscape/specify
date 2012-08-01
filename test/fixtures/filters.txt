@@ -4,8 +4,10 @@
 ✗ 0/1 specify#throws 
 └───── bla
 ❝ equal 
-"uncaught" // {
+"domain" // {
  "stacktrace": [
+  
+  
   
   
  ]
@@ -15,7 +17,12 @@
 ❝ ok false
 └───── Cannot read property 'name' of undefined
 ❝ equal 
-"uncaught" // {
+"domain" // {
+ "domain_thrown": true,
+ "domain": {
+  "members": [],
+  "_events": {}
+ },
  "stacktrace": [
   
   

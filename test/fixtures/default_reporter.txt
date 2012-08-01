@@ -36,7 +36,12 @@
 ❝ ok false
 └───── Cannot read property 'name' of undefined
 ❝ equal 
-"uncaught" // {
+"domain" // {
+ "domain_thrown": true,
+ "domain": {
+  "members": [],
+  "_events": {}
+ },
  "stacktrace": [
   
   
@@ -46,7 +51,12 @@
 ✗ 1/2 specify#cascading_sync_first_works 
 └───── Cannot read property 'name' of undefined
 ❝ equal 
-"uncaught" // {
+"domain" // {
+ "domain_thrown": true,
+ "domain": {
+  "members": [],
+  "_events": {}
+ },
  "stacktrace": [
   
   
@@ -56,7 +66,12 @@
 ✗ 0/2 specify#does_this_run 
 └───── Cannot read property 'name' of undefined
 ❝ equal 
-"uncaught" // {
+"domain" // {
+ "domain_thrown": true,
+ "domain": {
+  "members": [],
+  "_events": {}
+ },
  "stacktrace": [
   
   
@@ -68,7 +83,12 @@
 ❝ ok false
 └───── Cannot read property 'foobar' of undefined
 ❝ equal 
-"uncaught" // {
+"domain" // {
+ "domain_thrown": true,
+ "domain": {
+  "members": [],
+  "_events": {}
+ },
  "stacktrace": [
   
   
@@ -78,13 +98,90 @@
 ✗ 0/1 specify#throws 
 └───── bla
 ❝ equal 
-"uncaught" // {
+"domain" // {
  "stacktrace": [
+  
+  
   
   
  ]
 }
 ✗ 2/15 summary 
+
+  /test/specify/concurrent.js
+
+✗ 0/6 specify#parallel_uncaught 
+└───── Error
+❝ ok false
+└───── Cannot read property 'dog' of undefined
+❝ equal 
+"domain" // {
+ "domain_thrown": true,
+ "domain": {
+  "members": [
+   {
+    "_idleTimeout": 50,
+    "_idlePrev": {
+     "_idleNext": {
+      "$ref": "$[\"domain\"][\"members\"][0]"
+     },
+     "_idlePrev": {
+      "$ref": "$[\"domain\"][\"members\"][0]"
+     }
+    },
+    "_idleNext": {
+     "$ref": "$[\"domain\"][\"members\"][0][\"_idlePrev\"]"
+    },
+    "_idleStart": {},
+    "domain": {
+     "$ref": "$[\"domain\"]"
+    }
+   }
+  ],
+  "_events": {}
+ },
+ "stacktrace": [
+  
+  
+ ]
+}
+✗ 0/2 specify#also_throws 
+└───── Error
+❝ ok false
+└───── Cannot read property 'mouse' of undefined
+❝ equal 
+"domain" // {
+ "domain_thrown": true,
+ "domain": {
+  "members": [
+   {
+    "_idleTimeout": 50,
+    "_idlePrev": {
+     "_idleNext": {
+      "$ref": "$[\"domain\"][\"members\"][0]"
+     },
+     "_idlePrev": {
+      "$ref": "$[\"domain\"][\"members\"][0]"
+     }
+    },
+    "_idleNext": {
+     "$ref": "$[\"domain\"][\"members\"][0][\"_idlePrev\"]"
+    },
+    "domain": {
+     "$ref": "$[\"domain\"]"
+    },
+    "_idleStart": {}
+   }
+  ],
+  "_events": {}
+ },
+ "stacktrace": [
+  
+  
+ ]
+}
+✔ 1/1 specify#ok 
+✗ 1/9 summary 
 
   /test/specify/singletest.js
 
@@ -93,4 +190,4 @@
 
   totals
 
-✗ 3/16 summary 
+✗ 4/25 summary 

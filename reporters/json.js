@@ -1,6 +1,6 @@
 var decycle = require('cycle').decycle;
 
-module.exports = function default_reporter(name, report, errors) {
+module.exports = function json_reporter(name, report, errors) {
   var json_report = 
     { name   : name
     , report : report

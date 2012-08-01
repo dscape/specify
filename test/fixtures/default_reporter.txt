@@ -1,0 +1,96 @@
+
+  /test/specify/compact.js
+
+✗ 1/5 specify#circular_reference 
+└───── Error
+❝ equal 
+{
+ "abc": "Hello",
+ "go": {
+  "$ref": "$"
+ }
+} // "undefined"
+└───── Error
+❝ equal 
+"undefined" // {
+ "abc": "Hello",
+ "go": {
+  "$ref": "$"
+ }
+}
+└───── Error
+❝ equal 
+{[1m
+  "abc" : "Hello",[0m[1m // != undefined[0m[1m
+  "go" : {
+  }[0m[1m // != undefined[0m
+}
+└───── Error
+❝ equal 
+{
+  [1m[0m[1m// [0m[1m"abc" : "Hello",
+  [0m[1m// [0m[1m"go" : {"abc":"Hello","go":{}}[0m
+}
+✗ 0/2 specify#cascading_sync 
+└───── No error
+❝ ok false
+└───── Cannot read property 'name' of undefined
+❝ equal 
+"uncaught" // {
+ "stacktrace": [
+  
+  
+  
+ ]
+}
+✗ 1/2 specify#cascading_sync_first_works 
+└───── Cannot read property 'name' of undefined
+❝ equal 
+"uncaught" // {
+ "stacktrace": [
+  
+  
+  
+ ]
+}
+✗ 0/2 specify#does_this_run 
+└───── Cannot read property 'name' of undefined
+❝ equal 
+"uncaught" // {
+ "stacktrace": [
+  
+  
+  
+ ]
+}
+✗ 0/3 specify#they_all_blow 
+└───── No error
+❝ ok false
+└───── Cannot read property 'foobar' of undefined
+❝ equal 
+"uncaught" // {
+ "stacktrace": [
+  
+  
+  
+ ]
+}
+✗ 0/1 specify#throws 
+└───── bla
+❝ equal 
+"uncaught" // {
+ "stacktrace": [
+  
+  
+ ]
+}
+✗ 2/15 summary 
+
+  /test/specify/singletest.js
+
+✔ 1/1 main 
+✔ 1/1 summary 
+
+  totals
+
+✗ 3/16 summary 

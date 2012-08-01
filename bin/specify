@@ -7,6 +7,7 @@ var fs        = require("fs")
   , stack     = []
   , success   = true
   , args      = {env: process.env}
+  , counts    = {ok: 0, total: 0}
   , base_path
   , dirs
   , files
@@ -47,10 +48,12 @@ if(typeof width === "number") {
   args.env.SPECIFY_MAXCOLS = width;
 }
 
+// this is being executed from a runne
+args.env.SPECIFY_FROM_RUNNER = true;
+
 // set a reporter
-if(typeof argv.r === "string") {
-  args.env.SPECIFY_REPORTER = argv.r;
-}
+args.env.SPECIFY_REPORTER = 
+  argv.r || process.env.SPECIFY_REPORTER || 'default';
 
 function runTests(tests, previousStatus) {
   if(success) {
@@ -59,6 +62,19 @@ function runTests(tests, previousStatus) {
   if(tests[0]) {
     exec("node " + tests[0], args, ppTest(tests));
   } else {
+    if (counts.ok > 1 && counts.total > 1) {
+      try {
+        var summarize = require('../reporters/' + args.env.SPECIFY_REPORTER);
+        summarize("totals");
+        summarize("summary", 
+          { ok: counts.ok
+          , fail: counts.total-counts.ok
+          , notrun: 0
+          , thrown: 0
+          , _nostdout: true
+          });
+      } catch (exc) {}
+    }
     return process.exit(success ? 0 : 1);
   }
 }
@@ -66,6 +82,24 @@ function runTests(tests, previousStatus) {
 function ppTest (tests) {
   var file_path = tests.shift();
   return function (err, stdout, stderr) {
+    // update totals, if possible and provided by reporter
+    var lines = stdout.split("\n");
+    if(lines.length>0) {
+      var last_line = lines[lines.length-1];
+      if(last_line.indexOf("/") !== -1) {
+        var values = last_line.split("/");
+        if(values.length > 1) {
+          var worked = +values[0];
+          var total  = +values[1];
+          if(!isNaN(worked) && !isNaN(total)) {
+            counts.ok += worked;
+            counts.total += total;
+            lines.pop();
+            stdout = lines.join("\n");
+          }
+        }
+      }
+    }
     process.stdout.write(stdout);
     process.stdout.write(stderr);
     runTests(tests, !(err || stderr));

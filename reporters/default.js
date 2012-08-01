@@ -12,8 +12,9 @@ module.exports = function default_reporter(name, report, errors) {
   errors = errors || [];
   var failed = report.fail + report.notrun;
   var symbol = failed === 0 ? ('✔'.green) : ('✗'.red);
+  var right = report.ok + '/' + (report.ok+failed);
   process.stdout.write(symbol + ' ');
-  process.stdout.write(report.ok + '/' + (report.ok+failed) + ' ');
+  process.stdout.write(right + ' ');
   console.log(name.cyan + " ");
   errors.forEach(function(err) {
     if(typeof err === "string") {
@@ -45,4 +46,8 @@ module.exports = function default_reporter(name, report, errors) {
       }
     }
   });
+  if(name === "summary" && process.env.SPECIFY_FROM_RUNNER &&
+     !report._nostdout) {
+    process.stdout.write("\n" + right);
+  }
 };

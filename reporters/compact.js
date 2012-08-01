@@ -18,7 +18,7 @@ var isatty = tty.isatty(1) && tty.isatty(2)
   , current_errors = {}
   ;
 
-module.exports = function default_reporter(name, report, errors) {
+module.exports = function compact_reporter(name, report, errors) {
   // starting a new file
   if(typeof report === "undefined") {
     current_test = name;
@@ -34,6 +34,9 @@ module.exports = function default_reporter(name, report, errors) {
     console.log("%s %s %s", left, dots, right);
     current_test   = "";
     current_errors = {};
+    if(process.env.SPECIFY_FROM_RUNNER && !report._nostdout) {
+      process.stdout.write("\n" + right);
+    }
   } else { // errors
   
   }

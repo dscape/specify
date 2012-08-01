@@ -3,7 +3,9 @@
 
 `specify` is the simplest way i could think to do node.js testing
 
-it works with sync code and async code all the same.
+it works with sync code and async code all the same
+
+please use versions `~0.6.x` for node `0.6` and `~1.0.x` for node `0.8` or superior
 
 ``` js
 var specify = require('specify');

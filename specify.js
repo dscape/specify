@@ -1,4 +1,5 @@
 var assert     = require('assert')
+  , domain     = require('domain')
   , path       = require('path'), colors
   , reporters  = {}
   , assertions = 
@@ -17,7 +18,7 @@ require('fs').readdirSync(path.join(__dirname, 'reporters'))
 module.exports = (function specify() {
   var cache     = []
     , counts    = { _totals: {ok: 0, fail: 0, notrun: 0, thrown: 0} }
-    , spec, summary, def_summary, timer, current_test = {}
+    , spec, summary, def_summary, timer, current_test = {}, current_domain
     , default_reporter = process.env.SPECIFY_REPORTER
       ? Object.keys(reporters)
         .indexOf(process.env.SPECIFY_REPORTER + ".js") === -1
@@ -64,7 +65,6 @@ module.exports = (function specify() {
         timer = undefined;
       }
       if(tests.length === 0) {
-        process.removeAllListeners('uncaughtException');
         summary('summary', counts._totals);
         process.exit(counts._totals.fail === 0 ? 0 : -1);
       }
@@ -88,17 +88,23 @@ module.exports = (function specify() {
           if(match) {
             expect = match.length;
             current_test = {name: name, remaining: tests, expected: expect};
-            process.removeAllListeners('uncaughtException');
-            process.on('uncaughtException', uncaughtHandler);
+            if(current_domain && typeof current_domain.dispose==="function") {
+              current_domain.dispose();
+            }
+            current_domain = domain.create();
             if(timeout) {
               timer = setTimeout(function (){
                 throw new Error("Timeout");
               }, timeout);
+              current_domain.add(timer);
             }
-            return f(ensure_for(name, expect, function (errors) {
-              summary(name, counts[name], errors);
-              run_tests(tests);
-            }));
+            current_domain.on('error', domainHandler);
+            return current_domain.run(function () {
+              f(ensure_for(name, expect, function (errors) {
+                summary(name, counts[name], errors);
+                run_tests(tests);
+              }));
+            });
           } else {
             summary(name, {ok: 0, fail: 1, notrun: 0, thrown: 0}, 
               [' you need to add at least on `'+ vari[1] + '.*` call']);
@@ -154,13 +160,12 @@ module.exports = (function specify() {
     }
   };
 
-  // domains a la @pgte
-  function uncaughtHandler(err) {
+  function domainHandler(err) {
     err_count++;
     if(MAX_ERRORS === err_count) {
-      process.removeAllListeners('uncaughtException');
       err.message = "You have reached " + MAX_ERRORS + 
-        " errors so we decided to abort your tests\noriginal: " + err.message;
+        " errors so we decided to abort your tests\noriginal: " +
+        err.message;
       throw err;
     }
     err = typeof err === "string" ? new Error(err) : err; // idiotpatching
@@ -171,7 +176,7 @@ module.exports = (function specify() {
     counts[current_test.name].thrown++;
     counts._totals.thrown++;
     current_test.errored.push(
-      {msg: err.message || err, assert: "equal", args: ["uncaught", err]});
+      {msg: err.message || err, assert: "equal", args: ["domain", err]});
     summary(current_test.name, counts[current_test.name]
       , current_test.errored);
     run_tests(current_test.remaining);

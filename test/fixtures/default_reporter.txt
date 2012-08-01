@@ -1,6 +1,4 @@
-
   /test/specify/compact.js
-
 ✗ 1/5 specify#circular_reference 
 └───── Error
 ❝ equal 
@@ -43,9 +41,6 @@
   "_events": {}
  },
  "stacktrace": [
-  
-  
-  
  ]
 }
 ✗ 1/2 specify#cascading_sync_first_works 
@@ -58,9 +53,6 @@
   "_events": {}
  },
  "stacktrace": [
-  
-  
-  
  ]
 }
 ✗ 0/2 specify#does_this_run 
@@ -73,9 +65,6 @@
   "_events": {}
  },
  "stacktrace": [
-  
-  
-  
  ]
 }
 ✗ 0/3 specify#they_all_blow 
@@ -90,9 +79,6 @@
   "_events": {}
  },
  "stacktrace": [
-  
-  
-  
  ]
 }
 ✗ 0/1 specify#throws 
@@ -100,16 +86,10 @@
 ❝ equal 
 "domain" // {
  "stacktrace": [
-  
-  
-  
-  
  ]
 }
 ✗ 2/15 summary 
-
   /test/specify/concurrent.js
-
 ✗ 0/6 specify#parallel_uncaught 
 └───── Error
 ❝ ok false
@@ -132,7 +112,6 @@
     "_idleNext": {
      "$ref": "$[\"domain\"][\"members\"][0][\"_idlePrev\"]"
     },
-    "_idleStart": {},
     "domain": {
      "$ref": "$[\"domain\"]"
     }
@@ -141,8 +120,6 @@
   "_events": {}
  },
  "stacktrace": [
-  
-  
  ]
 }
 ✗ 0/2 specify#also_throws 
@@ -170,24 +147,17 @@
     "domain": {
      "$ref": "$[\"domain\"]"
     },
-    "_idleStart": {}
    }
   ],
   "_events": {}
  },
  "stacktrace": [
-  
-  
  ]
 }
 ✔ 1/1 specify#ok 
 ✗ 1/9 summary 
-
   /test/specify/singletest.js
-
 ✔ 1/1 main 
 ✔ 1/1 summary 
-
   totals
-
 ✗ 4/25 summary 

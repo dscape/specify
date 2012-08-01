@@ -1,15 +1,9 @@
-
   /test/specify.js
-
 ✗ 0/1 specify#throws 
 └───── bla
 ❝ equal 
 "domain" // {
  "stacktrace": [
-  
-  
-  
-  
  ]
 }
 ✗ 0/2 specify#cascading_sync 
@@ -24,9 +18,6 @@
   "_events": {}
  },
  "stacktrace": [
-  
-  
-  
  ]
 }
 ✗ 0/3 summary 

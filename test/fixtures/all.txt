@@ -1,6 +1,4 @@
-
   /test/specify.js
-
 ✗ 0/1 specify:no_arguments_in_cb 
 └─────  `assert` must be the first argument of your callback
 ✗ 0/1 specify#no_assertions 
@@ -35,14 +33,11 @@ specify#custom_pretty_print_just_name
     "domain": {
      "$ref": "$[\"domain\"]"
     },
-    "_idleStart": {}
    }
   ],
   "_events": {}
  },
  "stacktrace": [
-  
-  
  ]
 }
 ✔ 2/2 specify#timeout_after 
@@ -126,9 +121,6 @@ specify#custom_pretty_print_just_name
   "_events": {}
  },
  "stacktrace": [
-  
-  
-  
  ]
 }
 ✗ 0/1 specify#throws 
@@ -136,10 +128,6 @@ specify#custom_pretty_print_just_name
 ❝ equal 
 "domain" // {
  "stacktrace": [
-  
-  
-  
-  
  ]
 }
 {"name":"specify#json_reporter","report":{"ok":1,"fail":0,"notrun":0,"thrown":0,"meta":{"name":"specify#json_reporter","expected":1,"remaining":[["specify#comments",null]],"errored":[],"remaining_assertions":0}},"errors":{"$ref":"$[\"report\"][\"meta\"][\"errored\"]"}}

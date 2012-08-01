@@ -1,12 +1,30 @@
-node test/specify.js | sed 's/.\[[0-9][0-9]m//g' | sed 's/"at.*\(.*\)//' \
+node test/specify.js  \
+  | sed 's/.\[[0-9][0-9]m//g' \
+  | sed 's/"at.*\(.*\)//' \
+  | sed 's/"_idleStart".*//' \
+  | sed '/^[ \t]*$/d' \
   > test/all.log
 node test/specify.js specify#throws specify#cascading_sync \
-  | sed 's/.\[[0-9][0-9]m//g' | sed 's/"at.*\(.*\)//' >  test/filters.log
-node test/specify/singletest.js | sed 's/.\[[0-9][0-9]m//g' > test/single.log
-node bin/specify -e SPECIFY_REPORTER=compact > test/reporter.log
-node bin/specify -r compact > test/reporter2.log
-node bin/specify -r default | sed 's/.\[[0-9][0-9]m//g' | \
-  sed 's/"at.*\(.*\)//' > test/default_reporter.log
+  | sed 's/.\[[0-9][0-9]m//g' \
+  | sed 's/"at.*\(.*\)//' \
+  | sed 's/"_idleStart".*//' \
+  | sed '/^[ \t]*$/d' \
+  >  test/filters.log
+node test/specify/singletest.js \
+  | sed 's/.\[[0-9][0-9]m//g' \
+  | sed 's/"_idleStart".*//' \
+  | sed '/^[ \t]*$/d' \
+  > test/single.log
+node bin/specify -e SPECIFY_REPORTER=compact \
+  > test/reporter.log
+node bin/specify -r compact \
+  > test/reporter2.log
+node bin/specify -r default \
+  | sed 's/.\[[0-9][0-9]m//g' \
+  | sed 's/"at.*\(.*\)//' \
+  | sed 's/"_idleStart".*//' \
+  | sed '/^[ \t]*$/d' \
+  > test/default_reporter.log
 echo "all#1"
 diff test/all.log test/fixtures/all.txt
 if [ $? -eq 0 ]; then

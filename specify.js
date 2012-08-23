@@ -2,11 +2,12 @@ var assert     = require('assert')
   , domain     = require('domain')
   , path       = require('path'), colors
   , reporters  = {}
-  , assertions = 
+  , assertions =
     [ 'ok', 'equal', 'notEqual', 'deepEqual', 'notDeepEqual'
     , 'strictEqual', 'notStrictEqual' ]
   , err_count  = 0
   , MAX_ERRORS = process.env.SPECIFY_MAX_ERRORS || 1000
+  , startTime
   ;
 
 // read available reporters
@@ -42,7 +43,7 @@ module.exports = (function specify() {
           return;
         }
         try {
-          assert[assertion].apply(this,arguments); 
+          assert[assertion].apply(this,arguments);
           counts._totals.ok++;
           counts[test].ok++;
         }
@@ -54,7 +55,7 @@ module.exports = (function specify() {
         }
         count--;
         counts[test].meta.remaining_assertions = count;
-        if(count === 0) { 
+        if(count === 0) {
           done(errored);
         }
       };
@@ -71,6 +72,7 @@ module.exports = (function specify() {
         timer = undefined;
       }
       if(tests.length === 0) {
+        counts._totals.duration = Date.now() - startTime;
         summary('summary', counts._totals);
         process.exit(counts._totals.fail === 0 ? 0 : -1);
       }
@@ -103,18 +105,20 @@ module.exports = (function specify() {
             current_domain.on('error', domainHandler(name));
             return current_domain.run(function () {
               process.nextTick(function (){
+                var start = Date.now();
                 f(ensure_for(name, expect, tests, function (errors) {
+                  counts[name].duration = Date.now() - start;
                   summary(name, counts[name], errors);
                   run_tests(tests);
                 }));
               });
             });
           } else {
-            summary(name, {ok: 0, fail: 1, notrun: 0, thrown: 0}, 
+            summary(name, {ok: 0, fail: 1, notrun: 0, thrown: 0},
               [' you need to add at least on `'+ vari[1] + '.*` call']);
           }
         } else {
-          summary(name, {ok: 0, fail: 1, notrun: 0, thrown: 0}, 
+          summary(name, {ok: 0, fail: 1, notrun: 0, thrown: 0},
             [' `assert` must be the first argument of your callback']);
         }
         counts._totals.fail++;
@@ -147,6 +151,7 @@ module.exports = (function specify() {
       filter = [];
     }
     summary(module.parent.filename.replace(process.cwd(), ""));
+    startTime = Date.now();
     filter = typeof filter === "string" ? [filter] : filter;
     if(filter && filter.length !== 0) {
       var filtered_cache = [];
@@ -173,7 +178,7 @@ module.exports = (function specify() {
       }
       err_count++;
       if(MAX_ERRORS === err_count) {
-        err.message = "You have reached " + MAX_ERRORS + 
+        err.message = "You have reached " + MAX_ERRORS +
           " errors so we decided to abort your tests\noriginal: " +
           err.message;
         throw err;

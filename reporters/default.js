@@ -15,7 +15,11 @@ module.exports = function default_reporter(name, report, errors) {
   var right = report.ok + '/' + (report.ok+failed);
   process.stdout.write(symbol + ' ');
   process.stdout.write(right + ' ');
-  console.log(name.cyan + " ");
+  var d = '';
+  if(report.duration) {
+    d = 'took '.grey + (report.duration + 'ms').green;
+  }
+  console.log(name.cyan + " " + d);
   errors.forEach(function(err) {
     if(typeof err === "string") {
       console.log('└───── '.grey + (err || "Error"));

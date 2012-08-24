@@ -3,7 +3,7 @@
 , "author"      : "nuno job <nunojobpinto@gmail.com> (http://nunojob.com/)"
 , "contributors":
   [ "David Trejo <david@dtrejo.com> (http://dtrejo.com)" ]
-, "version"     : "1.0.0"
+, "version"     : "1.0.1"
 , "main"        : "./specify.js"
 , "homepage"    : "https://github.com/dscape/specify"
 , "repository"  : 

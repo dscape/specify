@@ -1,17 +1,23 @@
 node test/specify.js  \
   | sed 's/.\[[0-9][0-9]m//g' \
   | sed 's/"at.*\(.*\)//' \
+  | sed 's/took.*ms//' \
+  | sed 's/"duration":[0-9]*/"duration":0/' \
   | sed 's/"_idleStart".*//' \
   | sed '/^[ \t]*$/d' \
   > test/all.log
 node test/specify.js specify#throws specify#cascading_sync \
   | sed 's/.\[[0-9][0-9]m//g' \
   | sed 's/"at.*\(.*\)//' \
+  | sed 's/took.*ms//' \
+  | sed 's/"duration":[0-9]*/"duration":0/' \
   | sed 's/"_idleStart".*//' \
   | sed '/^[ \t]*$/d' \
   >  test/filters.log
 node test/specify/singletest.js \
   | sed 's/.\[[0-9][0-9]m//g' \
+  | sed 's/took.*ms//' \
+  | sed 's/"duration":[0-9]*/"duration":0/' \
   | sed 's/"_idleStart".*//' \
   | sed '/^[ \t]*$/d' \
   > test/single.log
@@ -22,6 +28,8 @@ node bin/specify -r compact \
 node bin/specify -r default \
   | sed 's/.\[[0-9][0-9]m//g' \
   | sed 's/"at.*\(.*\)//' \
+  | sed 's/took.*ms//' \
+  | sed 's/"duration":[0-9]*/"duration":0/' \
   | sed 's/"_idleStart".*//' \
   | sed '/^[ \t]*$/d' \
   > test/default_reporter.log

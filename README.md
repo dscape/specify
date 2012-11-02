@@ -182,7 +182,6 @@ everyone is welcome to contribute. patches, bug-fixes, reporters, new features.
 * code: `git clone git://github.com/dscape/specify.git`
 * home: <http://github.com/dscape/specify>
 * bugs: <http://github.com/dscape/specify/issues>
-* build: [![build status](https://secure.travis-ci.org/dscape/specify.png)](http://travis-ci.org/dscape/specify)
 
 `(oO)--',-` in [caos]
 

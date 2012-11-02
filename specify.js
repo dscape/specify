@@ -4,7 +4,7 @@ var assert     = require('assert')
   , reporters  = {}
   , assertions =
     [ 'ok', 'equal', 'notEqual', 'deepEqual', 'notDeepEqual'
-    , 'strictEqual', 'notStrictEqual' ]
+    , 'strictEqual', 'notStrictEqual', 'ifError']
   , err_count  = 0
   , MAX_ERRORS = process.env.SPECIFY_MAX_ERRORS || 1000
   , startTime

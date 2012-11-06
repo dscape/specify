@@ -96,14 +96,13 @@ module.exports = (function specify() {
           if(match) {
             expect = match.length;
             current_domain = domain.create();
-            if(timeout) {
-              timer = setTimeout(function (){
-                throw new Error("Timeout");
-              }, timeout);
-              current_domain.add(timer);
-            }
             current_domain.on('error', domainHandler(name));
             return current_domain.run(function () {
+              if(timeout) {
+                timer = setTimeout(function (){
+                  throw new Error("Timeout");
+                }, timeout);
+              }
               process.nextTick(function (){
                 var start = Date.now();
                 f(ensure_for(name, expect, tests, function (errors) {

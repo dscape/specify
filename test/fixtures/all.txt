@@ -25,16 +25,7 @@ specify#custom_pretty_print_just_name
 "domain" // {
  "domain_thrown": true,
  "domain": {
-  "members": [
-   {
-    "_idleTimeout": 50,
-    "_idlePrev": null,
-    "_idleNext": null,
-    "domain": {
-     "$ref": "$[\"domain\"]"
-    },
-   }
-  ],
+  "members": [],
   "_events": {}
  },
  "stacktrace": [

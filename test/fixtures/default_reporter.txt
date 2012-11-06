@@ -98,25 +98,7 @@
 "domain" // {
  "domain_thrown": true,
  "domain": {
-  "members": [
-   {
-    "_idleTimeout": 50,
-    "_idlePrev": {
-     "_idleNext": {
-      "$ref": "$[\"domain\"][\"members\"][0]"
-     },
-     "_idlePrev": {
-      "$ref": "$[\"domain\"][\"members\"][0]"
-     }
-    },
-    "_idleNext": {
-     "$ref": "$[\"domain\"][\"members\"][0][\"_idlePrev\"]"
-    },
-    "domain": {
-     "$ref": "$[\"domain\"]"
-    }
-   }
-  ],
+  "members": [],
   "_events": {}
  },
  "stacktrace": [
@@ -130,25 +112,7 @@
 "domain" // {
  "domain_thrown": true,
  "domain": {
-  "members": [
-   {
-    "_idleTimeout": 50,
-    "_idlePrev": {
-     "_idleNext": {
-      "$ref": "$[\"domain\"][\"members\"][0]"
-     },
-     "_idlePrev": {
-      "$ref": "$[\"domain\"][\"members\"][0]"
-     }
-    },
-    "_idleNext": {
-     "$ref": "$[\"domain\"][\"members\"][0][\"_idlePrev\"]"
-    },
-    "domain": {
-     "$ref": "$[\"domain\"]"
-    },
-   }
-  ],
+  "members": [],
   "_events": {}
  },
  "stacktrace": [

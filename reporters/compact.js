@@ -34,9 +34,6 @@ module.exports = function compact_reporter(name, report, errors) {
     console.log("%s %s %s", left, dots, right);
     current_test   = "";
     current_errors = {};
-    if(process.env.SPECIFY_FROM_RUNNER && !report._nostdout) {
-      process.stdout.write("\n" + right);
-    }
   } else { // errors
   
   }

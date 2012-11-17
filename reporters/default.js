@@ -50,8 +50,4 @@ module.exports = function default_reporter(name, report, errors) {
       }
     }
   });
-  if(name === "summary" && process.env.SPECIFY_FROM_RUNNER &&
-     !report._nostdout) {
-    process.stdout.write("\n" + right);
-  }
 };

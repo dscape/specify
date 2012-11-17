@@ -1,39 +1,47 @@
 #!/usr/bin/env node
-var fs        = require("fs")
-  , path      = require("path")
+var fs        = require('fs')
+  , path      = require('path')
   , tty       = require('tty')
-  , exec      = require('child_process').exec
+  , spawn     = require('child_process').spawn
   , argv      = require('optimist').argv
   , stack     = []
   , success   = true
   , args      = {env: process.env}
   , counts    = {ok: 0, total: 0}
+  , buffer    = ''
   , base_path
   , dirs
   , files
   , test
   ;
 
-// work for /test and /tests
-// will throw otherwise
+//
+// Will try to find tests in `tests` and `test`
+// Throws otherwise
+//
 try {
-  base_path = path.resolve(".", "tests");
+  base_path = path.resolve('.', 'tests');
   dirs      = fs.readdirSync(base_path);
 } catch (exc) {
-  base_path = path.resolve(".", "test");
+  base_path = path.resolve('.', 'test');
   dirs      = fs.readdirSync(base_path);
 }
 
-// set env vars in a platform agnostic way
+//
+// Set env vars in a platform agnostic way
+//
 (Array.isArray(argv.e) ? argv.e : argv.e ? [argv.e] : [])
 .forEach(function (env_var) {
-  if(env_var.indexOf("=")!==-1) {
-    var split = env_var.split("=");
+  if(~env_var.indexOf('=')) {
+    var split = env_var.split('=');
     args.env[split[0]] = split[1];
   }
 });
 
-// try to get tty size to give to child process
+//
+// Try to get tty size to give to child process
+// This allows shell to be resized to whatever is the current window size
+//
 var isatty = tty.isatty(1) && tty.isatty(2)
   , width  = isatty
     ? process.stdout.getWindowSize
@@ -44,29 +52,152 @@ var isatty = tty.isatty(1) && tty.isatty(2)
     : null
   ;
 
-if(typeof width === "number") {
+//
+// If we found something define it as MAXCOLS internal var
+//
+if(typeof width === 'number') {
   args.env.SPECIFY_MAXCOLS = width;
 }
 
-// this is being executed from a runne
+//
+// This is being executed from a runner
+//
 args.env.SPECIFY_FROM_RUNNER = true;
 
-// set a reporter
-args.env.SPECIFY_REPORTER = 
-  argv.r || process.env.SPECIFY_REPORTER || 'default';
+//
+// Set a reporter
+//
+args.env.SPECIFY_REPORTER = argv.r
+                         || process.env.SPECIFY_REPORTER
+                         || 'default';
 
-function runTests(tests, previousStatus) {
-  if(success) {
-    success = previousStatus;
+//
+// For spawn
+//
+args.stdio = ['pipe', 'pipe', 'pipe'];
+
+//
+// Recurse each file/subdirectory in our test folder
+//
+for(var dir in dirs) {
+  //
+  // Get that file/subdirectory path
+  //
+  var dir_path = path.resolve(base_path, dirs[dir]);
+  //
+  // If its indeed a subdirectory
+  //
+  if(fs.statSync(dir_path).isDirectory()) {
+    //
+    // Read the files in the subdirectory
+    //
+    files = fs.readdirSync(dir_path);
+    //
+    // For each file
+    //
+    for (var file in files) {
+      //
+      // Get the file path and run it if the extension is `js` or `node`
+      //
+      var file_path = path.resolve(dir_path, files[file]);
+      if(/\.js$|\.node$/.test(file_path)) {
+        //
+        // Put the test in the stack yo.
+        //
+        stack.push(file_path);
+      }
+    }
   }
-  if(tests[0]) {
-    exec("node " + tests[0], args, ppTest(tests));
-  } else {
+}
+
+//
+// Let's start running our tests
+//
+runTests(stack, true);
+
+//
+// ### function runTests(tests, previousStatus)
+// #### @tests {Array} Tests the need some runnin
+// #### @previousStatus {Boolean} To set failure from a previous call
+//
+// Runs all the tests.
+//
+function runTests(tests, previousStatus) {
+  //
+  // Get the file name we want to run
+  //
+  var test_path = tests[0];
+
+  //
+  // If we have a file name
+  //
+  if(test_path) {
+
+    //
+    // Start a child process to run that test
+    //
+    var test_stream = spawn('node', [test_path], args);
+
+    //
+    // Reset our stdio buffer
+    //
+    buffer      = '';
+
+    //
+    // Pipe the stdout from the child process to what the user can see
+    // on his screen
+    //
+    test_stream.stdout.pipe(process.stdout);
+
+    //
+    // Buffer the data so we can use it to make global counts across different
+    // child processes
+    //
+    test_stream.stdout.on('data', function (chunk) { 
+        buffer += chunk;
+    });
+
+    //
+    // Calculate these totals for this child
+    //
+    test_stream.on('close', function (exit) {
+      //
+      // The exit code from the child not being `0` means error
+      //
+      if(exit !== 0) {
+        success = false;
+      }
+      //
+      // Do the calculations, print out the results, recurse to runTests
+      //
+      ppTest(tests, buffer);
+    });
+
+    test_stream.on('error', function (err) {
+      //
+      // We failed
+      //
+      success = false;
+      console.log(err);
+    });
+  }
+
+  //
+  // Since we have run all the tests and have no filename left
+  // its time to run the summary of the suite
+  //
+  else {
+    //
+    // If we have data to summarize
+    //
     if (counts.ok > 1 && counts.total > 1) {
       try {
+        //
+        // Get out reporter
+        //
         var summarize = require('../reporters/' + args.env.SPECIFY_REPORTER);
-        summarize("totals");
-        summarize("summary", 
+        summarize('totals');
+        summarize('summary', 
           { ok: counts.ok
           , fail: counts.total-counts.ok
           , notrun: 0
@@ -75,48 +206,107 @@ function runTests(tests, previousStatus) {
           });
       } catch (exc) {}
     }
+    //
+    // Make sure it fails if at least one test failed
+    //
     return process.exit(success ? 0 : 1);
   }
 }
 
-function ppTest (tests) {
+//
+// ### ppTest (tests)
+// #### @tests {Array} Tests to prepare
+//
+// Prepate tests for `exec`
+//
+function ppTest (tests, stdout) {
+  //
+  // Get the path from current tests
+  //
   var file_path = tests.shift();
-  return function (err, stdout, stderr) {
-    // update totals, if possible and provided by reporter
-    var lines = stdout.split("\n");
-    if(lines.length>0) {
-      var last_line = lines[lines.length-1];
-      if(last_line.indexOf("/") !== -1) {
-        var values = last_line.split("/");
-        if(values.length > 1) {
-          var worked = +values[0];
-          var total  = +values[1];
-          if(!isNaN(worked) && !isNaN(total)) {
-            counts.ok += worked;
-            counts.total += total;
-            lines.pop();
-            stdout = lines.join("\n");
-          }
+
+  //
+  // Update totals, if possible and provided by reporter
+  //
+  var lines = stdout.split('\n');
+
+  //
+  // If we actually got some new line separated test results
+  //
+  if(lines.length>0) {
+    //
+    // Get the line before the last (last is simply a new line in specify)
+    //
+    var last_line = lines[lines.length-2];
+
+    //
+    // If we have a count in our last line that was spit out by the test
+    // we want to see if there's a `/`
+    //
+    // Like in:
+    //    /tests/shared/nano.js
+    // 
+    //  ✔ 2/2 shared_nano:test 
+    //  ✔ 2/2 summary
+    //
+    // or
+    // ✔ /tests/design/query.js .............................. 12/12
+    //
+    // we are interested in the \d+\/\d+ part of it, so lets break it there
+    //
+    if(~last_line.indexOf('/')) {
+      //
+      // Get the last line and try to understand if we can extract counts
+      // like 1/5
+      //
+      var values = last_line.split('/');
+
+      if(values.length > 1) {
+        //
+        // Transform values to integer. the worst way possible
+        //
+        //  > +9
+        //  9
+        //  > +'9'
+        //  9
+        //  > +'9n'
+        //  NaN
+        //
+        // We split by space to trim out potential non numbers
+        //
+        // For `worked` the thing we want in the last word (length-1) on the
+        // part of the split in the position before last (values length-2)
+        //
+        var worked = values[values.length-2].split(' ');
+        worked = +worked[worked.length-1];
+
+        //
+        // For total this is the first word (0) in the last position of the
+        // split (values length-1)
+        //
+        var total  = +values[values.length-1].split(' ')[0];
+
+        //
+        // If these things are not numbers
+        //
+        if(!isNaN(worked) && !isNaN(total)) {
+          //
+          // Update our counts using the result from child process
+          // When we end we can summarize all tests
+          //
+          counts.ok    += worked;
+          counts.total += total;
+          //
+          // Next!
+          //
+          lines.pop();
         }
       }
     }
-    process.stdout.write(stdout);
-    process.stdout.write(stderr);
-    runTests(tests, !(err || stderr));
-  };
-}
-
-for(var dir in dirs) {
-  var dir_path = path.resolve(base_path, dirs[dir]);
-  if(fs.statSync(dir_path).isDirectory()) {
-    files = fs.readdirSync(dir_path);
-    for (var file in files) {
-      var file_path = path.resolve(dir_path, files[file]);
-      if(/\.js$|\.node$/.test(file_path)) {
-        stack.push(file_path);
-      }
-    }
   }
-}
 
-runTests(stack, true);
+  //
+  // To iterate is human, <<end of quote goes here>>
+  //
+  runTests(tests);
+}

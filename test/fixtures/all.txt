@@ -2,10 +2,10 @@
 ✗ 0/1 specify:no_arguments_in_cb 
 └─────  `assert` must be the first argument of your callback
 ✗ 0/1 specify#no_assertions 
-└─────  you need to add at least on `assert.*` call
+└─────  you need to add at least one `assert.*` call
 ✔ 1/1 specify#dinosaurs 
 ✗ 0/1 specify#wrong_var 
-└─────  you need to add at least on `dino.*` call
+└─────  you need to add at least one `dino.*` call
 ✔ 1/1 specify#sync 
 ✔ 7/7 specify#all_assertions 
 ✗ 1/3 specify#assertion_with_optional_message 
@@ -121,6 +121,7 @@ specify#custom_pretty_print_just_name
  "stacktrace": [
  ]
 }
-{"name":"specify#json_reporter","report":{"ok":1,"fail":0,"notrun":0,"thrown":0,"meta":{"name":"specify#json_reporter","expected":1,"remaining":[["specify#comments",null]],"errored":[],"remaining_assertions":0},"duration":0},"errors":{"$ref":"$[\"report\"][\"meta\"][\"errored\"]"}}
-{"name":"specify#comments","report":{"ok":2,"fail":0,"notrun":0,"thrown":0,"meta":{"name":"specify#comments","expected":4,"remaining":[],"errored":[],"remaining_assertions":0},"duration":0},"errors":{"$ref":"$[\"report\"][\"meta\"][\"errored\"]"}}
-{"name":"summary","report":{"ok":24,"fail":21,"notrun":3,"thrown":3,"duration":0}}
+{"name":"specify#json_reporter","report":{"ok":1,"fail":0,"notrun":0,"thrown":0,"meta":{"name":"specify#json_reporter","expected":1,"remaining":[["specify#comments",null],["specify#comments_arent_detected",null]],"errored":[],"remaining_assertions":0},"duration":0},"errors":{"$ref":"$[\"report\"][\"meta\"][\"errored\"]"}}
+{"name":"specify#comments","report":{"ok":2,"fail":0,"notrun":0,"thrown":0,"meta":{"name":"specify#comments","expected":2,"remaining":[["specify#comments_arent_detected",null]],"errored":[],"remaining_assertions":0},"duration":0},"errors":{"$ref":"$[\"report\"][\"meta\"][\"errored\"]"}}
+{"name":"specify#comments_arent_detected","report":{"ok":1,"fail":0,"notrun":0,"thrown":0,"meta":{"name":"specify#comments_arent_detected","expected":1,"remaining":[],"errored":[],"remaining_assertions":0},"duration":0},"errors":{"$ref":"$[\"report\"][\"meta\"][\"errored\"]"}}
+{"name":"summary","report":{"ok":25,"fail":21,"notrun":3,"thrown":3,"duration":0}}

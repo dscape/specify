@@ -21,5 +21,6 @@
   , "colors"    : "0.6.x"
   , "cycle"     : "1.0.x"
   , "optimist"  : "0.3.x"
+  , "esprima"   : "~1.0.2"
   }
 }

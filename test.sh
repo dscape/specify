@@ -43,9 +43,6 @@ if [ $? -eq 0 ]; then
     diff test/single.log test/fixtures/single.txt
     if [ $? -eq 0 ]; then
       echo "reporter#4"
-      cat test/reporter.log
-      echo "="
-      cat test/fixtures/reporter.txt
       diff test/reporter.log test/fixtures/reporter.txt
       if [ $? -eq 0 ]; then
         echo "reporter_alt#5"

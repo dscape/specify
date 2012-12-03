@@ -1,5 +1,5 @@
 [31m✗[39m /test/specify/compact.js ............................. 2/15
-[31m✗[39m /test/specify/concurrent.js ........................... 1/9
+[31m✗[39m /test/specify/parallel.js ............................. 1/9
 leak detected: LEAKING
 [32m✔[39m /test/specify/singletest.js ........................... 1/1
 [31m✗[39m totals ............................................... 4/25

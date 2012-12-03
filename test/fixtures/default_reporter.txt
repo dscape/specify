@@ -89,7 +89,7 @@
  ]
 }
 ✗ 2/15 summary 
-  /test/specify/concurrent.js
+  /test/specify/parallel.js
 ✗ 0/6 specify#parallel_uncaught 
 └───── Error
 ❝ ok false

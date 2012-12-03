@@ -122,6 +122,7 @@
 ✗ 1/9 summary 
   /test/specify/singletest.js
 ✔ 1/1 main 
+leak detected: LEAKING
 ✔ 1/1 summary 
   totals
 ✗ 4/25 summary 

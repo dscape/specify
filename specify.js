@@ -6,7 +6,9 @@ var assert     = require('assert')
     [ 'ok', 'equal', 'notEqual', 'deepEqual', 'notDeepEqual'
     , 'strictEqual', 'notStrictEqual', 'ifError']
   , err_count  = 0
-  , MAX_ERRORS = process.env.SPECIFY_MAX_ERRORS || 1000
+  , MAX_ERRORS    = process.env.SPECIFY_MAX_ERRORS    || 1000
+  , CHECK_GLOBALS = process.env.SPECIFY_CHECK_GLOBALS ? true : false
+  , GLOBALS       = Object.keys(global)
   , startTime
   ;
 
@@ -66,12 +68,24 @@ module.exports = (function specify() {
 
   }
 
+  function check_globals () {
+    var end_globals = Object.keys(global)
+      , leaks = end_globals.filter(function (eg) {
+        return !~GLOBALS.indexOf(eg);
+      });
+    return leaks;
+  }
+
   function run_tests(tests) {
       if(timer) {
         clearTimeout(timer);
         timer = undefined;
       }
       if(tests.length === 0) {
+        var leaks = check_globals();
+        leaks.forEach(function (leak) {
+          console.log('leak detected: ' + leak);
+        });
         counts._totals.duration = Date.now() - startTime;
         summary('summary', counts._totals);
         process.exit(counts._totals.fail === 0 ? 0 : -1);

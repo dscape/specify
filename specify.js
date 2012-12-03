@@ -1,5 +1,6 @@
 var assert     = require('assert')
   , domain     = require('domain')
+  , esprima    = require('esprima')
   , path       = require('path'), colors
   , reporters  = {}
   , assertions =
@@ -76,6 +77,25 @@ module.exports = (function specify() {
     return leaks;
   }
 
+  //
+  // lifted from esprima's `detectnestedternary` example
+  //
+  function traverse(object, visitor) {
+    var key
+      , child
+      ;
+
+    visitor.call(null, object);
+    for (key in object) {
+      if (object.hasOwnProperty(key)) {
+        child = object[key];
+        if (typeof child === 'object' && child !== null) {
+          traverse(child, visitor);
+        }
+      }
+    }
+  }
+
   function run_tests(tests) {
       if(timer) {
         clearTimeout(timer);
@@ -101,14 +121,31 @@ module.exports = (function specify() {
           f = timeout;
           timeout = undefined;
         }
-        var fbody   = f.toString()
-          , vari    = fbody.match(/\((\w+)/m) // function (assert)
+        // Need to add () so that it's a complete JS script
+        var program = esprima.parse("(" + f.toString() + ")")
+          , vari
           ;
+
+        // Get argument identifiers from the function passed to specify
+        if (program.body[0].expression.type === "FunctionExpression") {
+          vari = program.body[0].expression.params.map(function(value) {
+            return value.name;
+          });
+        }
+
         if(Array.isArray(vari) && vari.length > 0) {
-          // assert.ok, assert.equal
-          var match = fbody.match(new RegExp(vari[1] + "\\.\\w", "gm"));
-          if(match) {
-            expect = match.length;
+          // Traverse program looking for assert.* function calls
+          var numberOfAsserts = 0;
+          traverse(program, function(node) {
+            if (node.type === 'MemberExpression' &&
+                node.object.name === vari[0] &&
+                assertions.indexOf(node.property.name) !== -1) {
+              numberOfAsserts++;
+            }
+          });
+
+          if(numberOfAsserts) {
+            expect = numberOfAsserts;
             current_domain = domain.create();
             current_domain.on('error', domainHandler(name));
             return current_domain.run(function () {
@@ -128,7 +165,7 @@ module.exports = (function specify() {
             });
           } else {
             summary(name, {ok: 0, fail: 1, notrun: 0, thrown: 0},
-              [' you need to add at least on `'+ vari[1] + '.*` call']);
+              [' you need to add at least one `'+ vari[0] + '.*` call']);
           }
         } else {
           summary(name, {ok: 0, fail: 1, notrun: 0, thrown: 0},

@@ -158,4 +158,10 @@ specify('specify#comments', function (assert) {
   assert.ok(true);
 });
 
+specify('specify#comments_arent_detected', function (assert) {
+  assert.ok(true);
+  //assert.ok(true);
+  /*assert.ok(true);*/
+});
+
 specify.run(filters);

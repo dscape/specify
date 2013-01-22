@@ -135,16 +135,24 @@ module.exports = (function specify() {
 
         if(Array.isArray(vari) && vari.length > 0) {
           // Traverse program looking for assert.* function calls
-          var numberOfAsserts = 0;
+          var numberOfAsserts = 0
+            , expected        = false
+            ;
           traverse(program, function(node) {
             if (node.type === 'MemberExpression' &&
                 node.object.name === vari[0] &&
                 assertions.indexOf(node.property.name) !== -1) {
               numberOfAsserts++;
             }
+            else if (node.type === 'MemberExpression' &&
+                node.object.name === vari[0] &&
+                node.property.name === 'expect') {
+              // will be specified later on but before nextTick
+              expected=true;
+            }
           });
 
-          if(numberOfAsserts) {
+          if(numberOfAsserts || expected) {
             expect = numberOfAsserts;
             current_domain = domain.create();
             current_domain.on('error', domainHandler(name));

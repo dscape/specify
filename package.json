@@ -7,7 +7,7 @@
   , "Isaac Z. Schlueter (http://izs.me)"
   , "Jon Buckley <jon@jbuckley.ca> (http://jbuckley.ca)"
   ]
-, "version"     : "1.1.1"
+, "version"     : "1.1.2"
 , "main"        : "./specify.js"
 , "homepage"    : "https://github.com/dscape/specify"
 , "repository"  : 

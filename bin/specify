@@ -148,12 +148,13 @@ function runTests(tests, previousStatus) {
     // on his screen
     //
     test_stream.stdout.pipe(process.stdout);
+    test_stream.stderr.pipe(process.stdout);
 
     //
     // Buffer the data so we can use it to make global counts across different
     // child processes
     //
-    test_stream.stdout.on('data', function (chunk) { 
+    test_stream.stdout.on('data', function (chunk) {
         buffer += chunk;
     });
 
@@ -197,7 +198,7 @@ function runTests(tests, previousStatus) {
         //
         var summarize = require('../reporters/' + args.env.SPECIFY_REPORTER);
         summarize('totals');
-        summarize('summary', 
+        summarize('summary',
           { ok: counts.ok
           , fail: counts.total-counts.ok
           , notrun: 0
@@ -245,8 +246,8 @@ function ppTest (tests, stdout) {
     //
     // Like in:
     //    /tests/shared/nano.js
-    // 
-    //  ✔ 2/2 shared_nano:test 
+    //
+    //  ✔ 2/2 shared_nano:test
     //  ✔ 2/2 summary
     //
     // or
@@ -254,7 +255,10 @@ function ppTest (tests, stdout) {
     //
     // we are interested in the \d+\/\d+ part of it, so lets break it there
     //
-    if(~last_line.indexOf('/')) {
+    if(!last_line) {
+      return console.log(stdout);
+    }
+    else if(~last_line.indexOf('/')) {
       //
       // Get the last line and try to understand if we can extract counts
       // like 1/5

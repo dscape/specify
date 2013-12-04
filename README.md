@@ -1,13 +1,13 @@
 <a name="specify"/>
 # specify
 
-`specify` is the simplest way i could think to do node.js testing
+`specify` is the simplest way i could think to do node.js testing.
 
-it works with sync code and async code all the same
+It works with sync code and async code all the same.
 
-please use versions `~0.6.x` for node `0.6` and `~1.0.x` for node `0.8` or superior
+Please use versions `~0.6.x` for node `0.6` and `~1.0.x` for node `0.8` or higher.
 
-if you don't like reading and want to see some code you can look at [nano's tests](https://github.com/dscape/nano/tree/master/tests) and learn there. also read the specify source code, its just a couple of lines of code
+If you don't like reading and want to see some code you can look at [nano's tests](https://github.com/dscape/nano/tree/master/tests) and learn there. Also read the `specify` source code; it's just a couple of lines of code.
 
 ``` js
 var specify = require('specify');
@@ -22,9 +22,9 @@ specify('create_by_secret', function (assert) {
 specify.run();
 ```
 
-the assert calls are callback functions that wrap the assert module. `specify` figures out how many callbacks you are calling by [static-analysis]. putting it simply it counts the number of times you wrote `assert.`. when that number of assertions is met, or when a timeout occurs, that test is complete and we can execute the next one.
+The assert calls are callback functions that wrap the assert module. `specify` figures out how many callbacks you are calling by [static-analysis]. To put it simply, it counts the number of times you wrote `assert`. When that number of assertions is met, or when a timeout occurs, that test is complete and we can execute the next one.
 
-static analysis does not work for a `for loop` and some other flow control constructs. in that case you can use `assert.expect(nr)` to tell specify how many assertions to expect:
+Static analysis does not work for a `for` loop and some other flow control constructs. In that case you can use `assert.expect(nr)` to tell specify how many assertions to expect:
 
 ``` js
 specify('more_assertions_than_asserts', function(assert) {
@@ -35,7 +35,7 @@ specify('more_assertions_than_asserts', function(assert) {
 });
 ```
 
-`specify` runs tests in one by one, not in parallel. if you set `assert.expect` higher than the number of `assert.` function calls the execution will stop, and your current test will never finish. you can circumvent this by setting a timeout:
+`specify` runs tests one by one, not in parallel. If you set `assert.expect` higher than the number of `assert` function calls the execution will stop, and your current test will never finish. You can circumvent this by setting a timeout:
 
 ``` js
 specify('foo', 50, function (assert) {
@@ -45,11 +45,11 @@ specify('foo', 50, function (assert) {
 });
 ```
 
-because tests are serialized `specify` can catch uncaught exceptions and continue to run. you will get a report about the error that was throw somewhere in your stack. this is analogous to the functionality the community refers to as `domains`.
+Because tests are serialized, `specify` can catch uncaught exceptions and continue to run. You will get a report about the error that was thrown somewhere in your stack. This is analogous to the functionality the community refers to as `domains`.
 
-`specify` is standalone, you don't need any special binaries to run it.
+`specify` is standalone; you don't need any special binaries to run it.
 
-if you think all these `specify` functions make your code look bloated you can also run a single function:
+If you think all these `specify` functions make your code look bloated, you can also run a single function:
 
 ``` js
 var specify = require('specify')
@@ -105,7 +105,7 @@ specify.run(
 <a name="filtering"/>
 # filtering
 
-in `specify` you specify which tests you want to run:
+In `specify` you specify which tests you want to run:
 
 ``` js
 var specify = require('specify')
@@ -130,9 +130,9 @@ specify.run(filters);
 <a name="reporters"/>
 # reporters
 
-if you feel like the output sent to `stdout` is ugly you can write your own reporter and send in a pull request.
+If you feel like the output sent to `stdout` is ugly, you can write your own reporter and send in a pull request.
 
-now use it:
+Now use it:
 
 ``` js
 specify('specify#ask_for_a_specific_reporter', function(assert) {
@@ -143,7 +143,7 @@ specify('specify#ask_for_a_specific_reporter', function(assert) {
 });
 ```
 
-you can also do this with a function if you like:
+You can also do this with a function if you like:
 
 ``` js
 specify('specify#custom_reporter_from_function', function(assert) {
@@ -160,29 +160,29 @@ specify('specify#custom_reporter_from_function', function(assert) {
 <a name="samples"/>
 # samples
 
-samples are available in the `/test` folder
+Samples are available in the `/test` folder.
 
 <a name="contribute"/>
 # contribute
 
-everyone is welcome to contribute. patches, bug-fixes, reporters, new features.
+Everyone is welcome to contribute. Patches, bug-fixes, reporters, new features.
 
-1. create an [issue][issues] so the community can comment on your idea
-2. fork `specify`
-3. create a new branch `git checkout -b feature_name`
-4. create tests for the changes you made
-5. make sure you pass both existing and newly inserted tests
-6. commit your changes
-7. push to your branch `git push origin feature_name`
-8. create an pull request
+1. Create an [issue][issues] so the community can comment on your idea
+2. Fork `specify`
+3. Create a new branch `git checkout -b feature_name`
+4. Create tests for the changes you made
+5. Make sure you pass both existing and newly inserted tests
+6. Commit your changes
+7. Push to your branch `git push origin feature_name`
+8. Create a pull request
 
 <a name="meta"/>
 # meta
 
-* code: `git clone git://github.com/dscape/specify.git`
-* home: <http://github.com/dscape/specify>
-* bugs: <http://github.com/dscape/specify/issues>
-* build: [![build status](https://secure.travis-ci.org/dscape/specify.png)](http://travis-ci.org/dscape/specify)
+* Code: `git clone git://github.com/dscape/specify.git`
+* Home: <http://github.com/dscape/specify>
+* Bugs: <http://github.com/dscape/specify/issues>
+* Build: [![build status](https://secure.travis-ci.org/dscape/specify.png)](http://travis-ci.org/dscape/specify)
 
 
 `(oO)--',-` in [caos]
@@ -190,19 +190,19 @@ everyone is welcome to contribute. patches, bug-fixes, reporters, new features.
 <a name="license"/>
 # license
 
-copyright 2012 nuno job <nunojob.com> `(oO)--',--`
+Copyright 2012 nuno job <nunojob.com> `(oO)--',--`
 
-licensed under the apache license, version 2.0 (the "license");
-you may not use this file except in compliance with the license.
-you may obtain a copy of the license at
+Licensed under the apache license, version 2.0 (the "license");
+You may not use this file except in compliance with the license.
+You may obtain a copy of the license at
 
     http://www.apache.org/licenses/LICENSE-2.0
 
-unless required by applicable law or agreed to in writing, software
+Unless required by applicable law or agreed to in writing, software
 distributed under the license is distributed on an "as is" basis,
 without warranties or conditions of any kind, either express or implied.
 see the license for the specific language governing permissions and
-limitations under the license
+limitations under the license.
 
 [npm]: http://npmjs.org
 [issues]: http://github.com/dscape/specify/issues

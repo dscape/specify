@@ -256,7 +256,7 @@ function ppTest (tests, stdout) {
     // we are interested in the \d+\/\d+ part of it, so lets break it there
     //
     if(!last_line) {
-      return console.log(stdout);
+      console.log(stdout);
     }
     else if(~last_line.indexOf('/')) {
       //

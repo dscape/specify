@@ -27,6 +27,10 @@ try {
   dirs      = fs.readdirSync(base_path);
 }
 
+if (argv._.length > 0) {
+  dirs = argv._;
+}
+
 //
 // Set env vars in a platform agnostic way
 //

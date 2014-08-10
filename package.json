@@ -1,27 +1,41 @@
-{ "name"        : "specify"
-, "description" : "bite sized node.js testing"
-, "author"      : "nuno job <nunojobpinto@gmail.com> (http://nunojob.com/)"
-, "contributors":
-  [ "David Trejo <david@dtrejo.com> (http://dtrejo.com)"
-  , "Jarrett Cruger (https://github.com/jcrugzz)"
-  , "Isaac Z. Schlueter (http://izs.me)"
-  , "Jon Buckley <jon@jbuckley.ca> (http://jbuckley.ca)"
-  ]
-, "version"     : "1.2.1"
-, "main"        : "./specify.js"
-, "homepage"    : "https://github.com/dscape/specify"
-, "repository"  : 
-  { "type": "git", "url": "http://github.com/dscape/specify.git" }
-, "bugs"        : "http://github.com/dscape/specify/issues"
-, "keywords"    : [ "test", "assert", "should", "tdd" ]
-, "engines"     : { "node" : ">=0.8.0" }
-, "scripts"     : { "test" : "./test.sh"}
-, "bin"         : { "specify": "./bin/specify" }
-, "dependencies": 
-  { "difflet"   : "0.2.x"
-  , "colors"    : "0.6.x"
-  , "cycle"     : "1.0.x"
-  , "optimist"  : "0.3.x"
-  , "esprima"   : "1.0.x"
+{
+  "name": "specify",
+  "description": "bite sized node.js testing",
+  "author": "nuno job <nunojobpinto@gmail.com> (http://nunojob.com/)",
+  "contributors": [
+    "David Trejo <david@dtrejo.com> (http://dtrejo.com)",
+    "Jarrett Cruger (https://github.com/jcrugzz)",
+    "Isaac Z. Schlueter (http://izs.me)",
+    "Jon Buckley <jon@jbuckley.ca> (http://jbuckley.ca)"
+  ],
+  "version": "1.3.0",
+  "main": "./specify.js",
+  "homepage": "https://github.com/dscape/specify",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/dscape/specify.git"
+  },
+  "bugs": "http://github.com/dscape/specify/issues",
+  "keywords": [
+    "test",
+    "assert",
+    "should",
+    "tdd"
+  ],
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "scripts": {
+    "test": "./test.sh"
+  },
+  "bin": {
+    "specify": "./bin/specify"
+  },
+  "dependencies": {
+    "difflet": "0.2.x",
+    "colors": "0.6.x",
+    "cycle": "1.0.x",
+    "optimist": "0.3.x",
+    "esprima": "1.0.x"
   }
 }
